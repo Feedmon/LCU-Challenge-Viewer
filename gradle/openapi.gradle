@@ -1,0 +1,16 @@
+apply plugin: 'org.springdoc.openapi-gradle-plugin'
+
+openApi {
+    apiDocsUrl = "http://localhost:8081/v3/api-docs"
+    outputDir = file("${projectDir}/openapi")
+    // if needed to split apis in groups use groupedApiMappings = []
+    outputFileName = "api.json"
+    forkProperties = '-Dfile.encoding=UTF-8 -Denums-as-ref=true -Dspring.profiles.active=development -Dserver.port=8081 -Dspring.datasource.url=jdbc:h2:./testdb2'
+    waitTimeInSeconds = 180
+}
+
+// Ensure always executed when jar changes
+// see: https://github.com/springdoc/springdoc-openapi-gradle-plugin/issues/59
+tasks.withType(OpenApiGeneratorTask) {
+    inputs.files bootJar.outputs.getFiles()
+}

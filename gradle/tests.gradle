@@ -1,0 +1,30 @@
+/*task integrationTest(type: Test) {
+    // descripition = "runs integration tests"
+    group = "verification"
+
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+
+    outputs.upToDateWhen { false }
+}
+
+check.dependsOn integrationTest
+
+task restIntegrationTest(type: Test) {
+    //   descripition = "runs integration tests"
+    group = "verification"
+
+    testClassesDirs = sourceSets.restIntegrationTest.output.classesDirs
+    classpath = sourceSets.restIntegrationTest.runtimeClasspath
+
+    outputs.upToDateWhen { false }
+    shouldRunAfter integrationTest
+
+}
+
+check.dependsOn restIntegrationTest*/
+
+// print entire environment config in tests
+test.doFirst {
+    environment.each { k, v -> println "${k}:${v}" }
+}

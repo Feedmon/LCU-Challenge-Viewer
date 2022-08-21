@@ -1,0 +1,5 @@
+task runJar(type: JavaExec, dependsOn: bootJar) {
+    main = "-jar"
+    args = [bootJar.archiveFile.get()]
+    jvmArgs = ["-Dspring.prfiles.active=development"]
+}

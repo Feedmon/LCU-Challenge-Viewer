@@ -1,0 +1,35 @@
+apply plugin: "pmd"
+
+pmd {
+    reportsDir = new File(project.buildDir, "reports/pmd")
+    consoleOutput = true
+    toolVersion = "6.29.0"
+    ruleSetFiles = files("${rootDir}/quality/pmd-rules.xml")
+    ruleSets= []
+    ignoreFailures = false
+}
+
+task pmdCompile(type: Pmd, group: "verification") {
+    description = "runs the PMD Task and generates report to the build/reports directory"
+
+    ignoreFailures = false
+    ruleSets = []
+    source sourceSets.main.java.srcDirs
+    include '**/*.java'
+    consoleOutput = true
+    ruleSetFiles = files("${rootDir}/quality/pmd-rules.xml")
+
+    reports {
+        xml {
+            enabled = true
+            destination = file("$project.buildDir/reports/pmd/pmd-compile.xml")
+        }
+        html {
+            enabled = true
+            destination = file("$project.buildDir/reports/pmd/pmd-compile.html")
+        }
+    }
+    outputs.upToDateWhen {false}
+}
+test.configure { shouldRunAfter pmdCompile}
+check.dependsOn pmdCompile

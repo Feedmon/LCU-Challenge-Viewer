@@ -3,12 +3,27 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.13.RELEASE'
     id 'org.asciidoctor.convert' version '1.5.8'
     id 'java'
+    id "org.liquibase.gradle" version "2.1.1"
+    id "com.github.psxpaul.execfork" version "0.1.8"
+    id "com.github.node-gradle.node" version "2.2.4"
+    id "org.springdoc.openapi-gradle-plugin" version "1.3.2"
+    id "com.github.johnrengelman.processes" version "0.5.0"
 }
 
 group = 'feedmon'
-version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '18'
 
+ext {
+    JVM_ARGUMENTS = [
+            '-Dfile.encoding=UTF-8',
+            '-Xmx1536m',
+            '-Duser.language=de',
+            '-Duser.country=CH'
+    ].flatten()
+    JavaExecFork = com.github.psxpaul.task.JavaExecFork
+    ExecFork = com.github.psxpaul.task.ExecFork
+    OpenApiGeneratorTask = org.springdoc.openapi.gradle.plugin.OpenApiGeneratorTask
+}
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -29,6 +44,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // this imports openapi web url thingy
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
@@ -49,4 +67,30 @@ tasks.named('test') {
 tasks.named('asciidoctor') {
     inputs.dir snippetsDir
     dependsOn test
+}
+
+
+apply from: './gradle/bootJar.gradle'
+apply from: './gradle/clean.gradle'
+apply from: './gradle/code-analysis.gradle'
+apply from: './gradle/cypress.gradle'
+apply from: './gradle/frontend.gradle'
+apply from: './gradle/java.gradle'
+apply from: './gradle/jvmArguments.gradle'
+apply from: './gradle/liquibase.gradle'
+apply from: './gradle/openapi.gradle'
+apply from: './gradle/run.gradle'
+apply from: './gradle/tests.gradle'
+
+sourceSets {
+    test {
+        java {}
+    }
+
+    integrationTest {
+        compileClasspath += sourceSets.main.output + sourceSets.test.output
+        runtimeClasspath += sourceSets.main.output + sourceSets.test.output
+        java { srcDirs = ["src/integration-test/java"] }
+        resources { srcDir file("src/integration-test/resources") }
+    }
 }

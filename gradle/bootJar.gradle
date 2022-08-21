@@ -1,0 +1,23 @@
+jar {
+    enabled = true
+}
+
+bootJar {
+    dependsOn 'buildFrontend'
+
+    into('BOOT-INF/classes/static') {
+        from "frontend/dist"
+    }
+}
+
+bootRun {
+    configure {
+        def allArgs = JVM_ARGUMENTS
+        if (!allArgs.toString().contains("-Dspring.profiles.active")) {
+            allArgs = allArgs + ["-Dspring.profiles.active=development"]
+        }
+
+        println "Configuring task 'bootRun' with JVM Args: ${allArgs}"
+        jvmArgs = allArgs
+    }
+}

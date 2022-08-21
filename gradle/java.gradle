@@ -1,0 +1,19 @@
+apply plugin: "java"
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+tasks.withType(JavaExec) {
+    jvmArgs "-Dfile.encoding=UTF-8"
+}
+
+final String fileEncoding = System.getProperty("file.encoding")
+println "'${project.name}' uses '${fileEncoding}' file encoding"
+println "'${project.name}' executed with Java version '${JavaVersion.current()}' ('${System.getProperty("java.version")}')'"
+println "'${project.name}' executed with Gradle version '$gradle.gradleVersion'"
+
+// break build early if the gradlew runs with wrong file encoding
+if(fileEncoding != "UTF-8" && System.getProperty("org.gradle.appname") == "gradlew") {
+    throw new RuntimeException("Unsupported file encoding detected: ${fileEncoding}. Make sure to start Gradle using '-Dfile.encoding=UTF8'")
+}

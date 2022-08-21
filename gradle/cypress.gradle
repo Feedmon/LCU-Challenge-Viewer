@@ -1,0 +1,19 @@
+apply plugin: "com.github.psxpaul.execfork"
+
+task startDeamon(type: ExecFork, dependsOn: [bootJar]) {
+    commandLine = "java"
+    configure {
+        def allArgs = JVM_ARGUMENTS
+        allArgs = allArgs + ["-Dspring.profiles.active=systemtest"]
+        waitForPort = 8081
+
+        allArgs << "-jar"
+        allArgs << bootJar.archiveFile.toString()
+
+        println "Configuring task ':startDeamon' with JVM Args: ${allArgs}"
+        args = allArgs
+        waitForOutput = "Application is ready on"
+    }
+    workingDir = "${projectDir}"
+    timeout = 300
+}

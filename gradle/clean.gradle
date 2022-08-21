@@ -1,0 +1,5 @@
+task cleanFrontend(type: Delete) {
+    delete file("${project.projectDir}/fronted/dist")
+    delete file("${project.projectDir}/fronted/build")
+}
+clean.dependsOn cleanFrontend

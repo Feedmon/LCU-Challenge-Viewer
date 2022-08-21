@@ -1,0 +1,15 @@
+/* not used yet
+
+liquibase {
+    activities {
+        main {
+            changeLogFile 'src/main/resources/db/liquibase-changelog.xml'
+            url "jdbc: something"
+            username "YOUR_SCHEMA"
+            password "YOUR_PASSWORD"
+            contexts "none"
+        }
+    }
+}
+
+ */

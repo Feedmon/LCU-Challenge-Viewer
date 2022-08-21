@@ -1,0 +1,22 @@
+{
+  "baseUrl": "http://localhost:9000",
+  "viewportWidth": 1051,
+  "viewportHeight": 751,
+  "chromeWebSecurity": false,
+  "video": false,
+  "videosFolder": "cypress/videos",
+  "videoUploadOnPasses": false,
+  "screenshotOnRunFailure": false,
+  "screenshotsFolder": "cypress/screenshots",
+  "downloadsFolder": "cypress/downloads",
+  "trashAssetsBeforeRuns": false,
+  "reporter": "spec",
+  "retries": {
+    "runMode": 1,
+    "openMode": 0
+  },
+  "watchForFileChanges": true,
+  "env": {
+    "environment": "local"
+  }
+}

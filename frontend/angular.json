@@ -3,11 +3,14 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Angular_Tests": {
+    "school-scheduler": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
+        },
+        "@schematics/angular:application": {
+          "strict": true
         }
       },
       "root": "",
@@ -17,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/angular-tests",
+            "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -38,12 +41,12 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "3kb",
+                  "maximumError": "8kb"
                 }
               ],
               "fileReplacements": [
@@ -67,12 +70,16 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "proxyConfig": "proxy.conf.js",
+            "disableHostCheck": true
+          },
           "configurations": {
             "production": {
-              "browserTarget": "Angular_Tests:build:production"
+              "browserTarget": "school-scheduler:build:production"
             },
             "development": {
-              "browserTarget": "Angular_Tests:build:development"
+              "browserTarget": "school-scheduler:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -80,7 +87,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "Angular_Tests:build"
+            "browserTarget": "school-scheduler:build"
           }
         },
         "test": {
@@ -99,6 +106,16 @@
               "src/styles.scss"
             ],
             "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintfFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ],
+            "maxWarnings": 0
           }
         }
       }

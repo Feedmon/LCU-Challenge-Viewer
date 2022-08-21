@@ -1,0 +1,4 @@
+tasks.withType(Test) {
+    println "Configuring ${it.name} with JVM Args: ${JVM_ARGUMENTS}"
+    jvmArgs = JVM_ARGUMENTS
+}

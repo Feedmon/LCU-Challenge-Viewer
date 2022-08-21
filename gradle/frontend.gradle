@@ -6,15 +6,15 @@ node {
 
 npmInstall {
     inputs.file("${project.projectDir}/frontend/package.json")
-        .withPropertyName("packages")
-        .withPathSensitivity(PathSensitivity.RELATIVE)
+            .withPropertyName("packages")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.file("${project.projectDir}/frontend/package-lock.json")
             .withPropertyName("packagesLock")
             .withPathSensitivity(PathSensitivity.RELATIVE)
 
-    outputs.cachIf {true}
+    outputs.cacheIf { true }
     outputs.dir("${project.projectDir}/frontend/node_modules")
-        .withPropertyName("node-modules")
+            .withPropertyName("node-modules")
     outputs.dir("${project.projectDir}/frontend/package-lock.json")
             .withPropertyName("packages-lock")
 }
@@ -33,11 +33,11 @@ task buildFrontend(type: NpmTask, dependsOn: [npmInstall, "lintFrontend"]) {
             .withPathSensitivity(PathSensitivity.RELATIVE)
 
     outputs.dir("${project.projectDir}/frontend/dist")
-        .withPropertyName("dist")
+            .withPropertyName("dist")
 }
 
-tast startFrontend(type: NpmTask, dependsOn: npmInstall) {
-    description: "runs the application frontend. "
+task startFrontend(type: NpmTask, dependsOn: npmInstall) {
+    //  description: "runs the application frontend. "
     group = "build"
 
     args = ["run", "start"]
@@ -50,3 +50,74 @@ tast startFrontend(type: NpmTask, dependsOn: npmInstall) {
             .withPathSensitivity(PathSensitivity.RELATIVE)
 }
 
+task lintFrontend(type: NpmTask, dependsOn: npmInstall) {
+    //  description: "runs eslint"
+    group = "verification"
+
+    args = ["run", "lint"]
+
+    inputs.file("${project.projectDir}/frontend/package.json")
+            .withPropertyName("packages")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.file("${project.projectDir}/frontend/package-lock.json")
+            .withPropertyName("packagesLock")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.file("${project.projectDir}/frontend/src")
+            .withPropertyName("src")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+
+    outputs.upToDateWhen { false }
+}
+
+check.dependsOn lintFrontend
+
+task ngOpenApiGen(type: NpmTask, dependsOn: npmInstall) {
+    description = "runs ng-openai-gen"
+    group = "generation"
+
+    args = ["run", "ng-openapi-gen"]
+
+    inputs.file("${project.projectDir}/frontend/package.json")
+            .withPropertyName("packages")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.file("${project.projectDir}/frontend/package-lock.json")
+            .withPropertyName("packagesLock")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.file("${project.projectDir}/frontend/ng-openapi-gen.json")
+            .withPropertyName("ng-openapi-gen")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.file("${project.projectDir}/frontend/api.json")
+            .withPropertyName("api")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+
+    outputs.dir("${project.projectDir}/frontend/src/backend-api/api")
+            .withPropertyName("generated-backend-api")
+}
+
+test.configure { shouldRunAfter ngOpenApiGen }
+
+task cleanGeneratedApi(type: Delete) {
+    delete file("${project.projectDir}/frontend/src/backend-api/api")
+}
+
+task frontendTest(type: NpmTask, dependsOn: [npmInstall, ngOpenApiGen]) {
+    description = "run Karma Tests"
+    group = "verification"
+
+    args = ["run", "test:ci"]
+    description = "runs karma tests configured at frontend \\karma.conf.js"
+}
+
+frontendTest.configure { shouldRunAfter test }
+
+// integrationTest.configure { shouldRunAfter frontendTest }
+
+check.dependsOn frontendTest
+
+task cypress(type: NpmTask, dependsOn: ["startDeamon", npmInstall]) {
+    description = "runs Cypress tests"
+
+    args = ["run", "cy:jar"]
+}
+
+clean.dependsOn(cleanGeneratedApi)
