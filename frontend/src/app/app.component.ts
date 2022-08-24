@@ -7,7 +7,7 @@ import {TestService} from "./services/test.service";
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'Angular_TestsFuck me';
+  title = 'oof';
 
   constructor(private testService: TestService) {
   }
