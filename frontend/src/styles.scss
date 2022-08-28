@@ -1,1 +1,18 @@
-/* You can add global styles to this file, and also import other style files */
+@import "material-customization.css";
+
+.clickable {
+  cursor: pointer;
+}
+
+.center {
+  text-align: center;
+}
+
+h1:before, h2:before, h3:before {
+  background-color: #000;
+  content: "";
+  display: block;
+  height: 3px;
+  margin-bottom: 5px;
+  width: 111px;
+}

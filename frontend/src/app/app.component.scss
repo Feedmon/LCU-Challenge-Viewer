@@ -1,19 +1,25 @@
-.sidebar {
+.home-sidebar {
   position: fixed;
+  padding: 0 15px 15px 15px;
   left: 0;
   top: 0;
   width: 10%;
   height: 100%;
+  background-color: #C9D7E1;
+}
+
+.shadow {
+  position: fixed;
+  top: 0;
+  left: calc(10% + 30px);
+  width: calc(90% - 30px);
+  height: 100%;
+  box-shadow: inset 3px 0 3px 0 rgba(209, 209, 209, 1);
 }
 
 .home-main {
-  position: fixed;
+  position: relative;
   top: 0;
-  left: 10%;
-  width: 90%;
-  height: 100%;
-}
-
-.center {
-  text-align: center;
+  left: 3px;
+  width: calc(100% - 3px);
 }

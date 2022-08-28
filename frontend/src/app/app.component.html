@@ -1,22 +1,8 @@
-<div class="sidebar">
-  dunno
+<div class="home-sidebar">
+  <app-sidebar></app-sidebar>
 </div>
-<div class="home-main">
-  <div class="center">test</div>
-  yessir
-
-  <button (click)="changeText()">Click me</button>
-
-  <div class="center">
-    {{text}}
+<div class="shadow">
+  <div class="home-main">
+    <router-outlet></router-outlet>
   </div>
-
-  <br/>
-  <br/>
-  <br/>
-
-  <div class="center" style="color: darkblue">
-    {{mes}}
-  </div>
-  <router-outlet></router-outlet>
 </div>
