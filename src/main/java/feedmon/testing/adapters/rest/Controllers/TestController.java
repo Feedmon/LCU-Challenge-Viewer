@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 import static feedmon.testing.util.Constants.TEXT_PLAIN_UTF_8_VALUE;
 
 @RestController
@@ -32,10 +30,5 @@ public class TestController {
     public void create() {
         this.subjectRepository.save(new Subject("English", "Petra"));
     }
-
-    @GetMapping(value = "getAll")
-    public List<Subject> getAllSubjects() {
-        return this.subjectRepository.getAllSubjects();
-    }
-
+    
 }

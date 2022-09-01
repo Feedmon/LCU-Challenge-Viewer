@@ -10,8 +10,10 @@ export class SidebarComponent {
   constructor(private openMaterialDialogService: OpenMaterialDialogService) {
   }
 
-  create(): void {
+  create(): boolean {
     console.log("working");
     this.openMaterialDialogService.open();
+
+    return "a" > "b";
   }
 }
