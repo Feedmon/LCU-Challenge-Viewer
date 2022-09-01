@@ -1,29 +1,35 @@
 import {Component, OnInit} from "@angular/core";
-import {TestControllerService} from "../../backend-api/api/services/test-controller.service";
 import {MatTableDataSource} from "@angular/material/table";
+import {TestService} from "../services/test.service";
+import {SubjectDto} from "../../backend-api/api/models/subject-dto";
 
 @Component({
   selector: 'app-baumig',
   templateUrl: 'baumig.component.html'
 })
 export class BaumigComponent implements OnInit {
-  tableData: string[] = ["test"];
+  tableData: SubjectDto[] = [];
 
-  dataSource = new MatTableDataSource<string>();
-  displayedColumns = ["test1", "test2", "test3"];
+  dataSource = new MatTableDataSource<SubjectDto>();
+  displayedColumns = ["name", "teacher", "id"];
 
-  constructor(private testControllerService: TestControllerService) {
+  constructor(private testService: TestService) {
   }
 
   ngOnInit(): void {
-    this.testControllerService.test().toPromise().then(response => {
-      this.tableData[1] = response;
+    this.testService.getAllSubjects().then(response => {
+      this.tableData = response;
       this.dataSource.data = this.tableData;
     })
   }
 
 
-  typedString(untypedString: string): string {
-    return untypedString;
+  typedSubject(untypedSubject: SubjectDto): SubjectDto {
+    return untypedSubject;
+  }
+
+  getValue(Subject: SubjectDto, columnName: string) {
+    // @ts-ignore
+    return Subject[columnName];
   }
 }

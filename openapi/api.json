@@ -1,5 +1,64 @@
 {
-  "components": {},
+  "components": {
+    "schemas": {
+      "SubjectDto": {
+        "type": "object",
+        "properties": {
+          "teacher": {
+            "type": "string"
+          },
+          "goodClassMates": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "topics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "work": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "name": {
+            "type": "string"
+          },
+          "lesson": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "id": {
+            "format": "int64",
+            "type": "integer"
+          }
+        }
+      },
+      "CreateClassRequestDto": {
+        "type": "object",
+        "properties": {
+          "teacher": {
+            "type": "string"
+          },
+          "className": {
+            "type": "string"
+          },
+          "goodMates": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
   "servers": [
     {
       "description": "Generated server url",
@@ -8,7 +67,7 @@
   ],
   "openapi": "3.0.1",
   "paths": {
-    "/api/testing": {
+    "/api/testing/{id}": {
       "get": {
         "operationId": "test",
         "responses": {
@@ -18,6 +77,63 @@
               "text/plain;charset\u003dUTF8": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "tags": [
+          "test-controller"
+        ]
+      }
+    },
+    "/api/testing/create": {
+      "put": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateClassRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "operationId": "create",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "test-controller"
+        ]
+      }
+    },
+    "/api/testing": {
+      "get": {
+        "operationId": "getAllSubjects",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SubjectDto"
+                  }
                 }
               }
             }

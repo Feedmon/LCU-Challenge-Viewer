@@ -8,22 +8,17 @@ import {TestService} from "./services/test.service";
 })
 export class AppComponent {
   title = 'oof';
+  text: string = "";
+  mes: string | undefined;
+  times = 0;
 
   constructor(private testService: TestService) {
   }
-
-  text: string = "";
-  mes: string | undefined;
-
-  times = 0;
 
   changeText(): void {
     this.times = this.times + 1;
     this.text = "test clicked: " + this.times + " times.";
 
-    this.testService.getMessage().then(message => {
-      this.mes = message
-    });
   }
 
 }

@@ -1,19 +1,21 @@
 <h2 mat-dialog-title>Create Class</h2>
 
 <mat-dialog-content>
-  <mat-form-field class="full-width" appearance="outline">
-    <mat-label>classname</mat-label>
-    <input matInput>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Subject</mat-label>
+    <input [(ngModel)]="subject"
+           matInput>
   </mat-form-field>
 
-  <mat-form-field class="full-width" appearance="outline">
+  <mat-form-field appearance="outline" class="full-width">
     <mat-label>teacher</mat-label>
-    <input matInput>
+    <input [(ngModel)]="teacher"
+           matInput>
   </mat-form-field>
 
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button mat-raised-button mat-dialog-close="false">Cancel</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="true">Save</button>
+  <button mat-dialog-close="false" mat-raised-button>Cancel</button>
+  <button (click)="save()" color="primary" mat-raised-button>Save</button>
 </mat-dialog-actions>

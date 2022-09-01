@@ -11,6 +11,7 @@ import {SharedModule} from "./shared/shared-module";
 import {OpenMaterialDialogService} from "./shared/open-material-dialog.service";
 import {CreateClassComponent} from './create-class/create-class/create-class.component';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
     HttpClientModule,
     MaterialModule,
     SharedModule,
+    FormsModule,
   ],
   providers: [
     OpenMaterialDialogService,
