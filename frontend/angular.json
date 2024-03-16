@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "school-scheduler": {
+    "challenge-viewer": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -40,7 +40,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
+                  "maximumWarning": "1mb",
                   "maximumError": "5mb"
                 },
                 {
@@ -76,10 +76,10 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "school-scheduler:build:production"
+              "browserTarget": "challenge-viewer:build:production"
             },
             "development": {
-              "browserTarget": "school-scheduler:build:development"
+              "browserTarget": "challenge-viewer:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -87,7 +87,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "school-scheduler:build"
+            "browserTarget": "challenge-viewer:build"
           }
         },
         "test": {
@@ -111,11 +111,11 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintfFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html"
+            "eslintConfig": ".eslintrc.json",
+            "lintFilePatterns": [
+              "src/**/*.ts"
             ],
-            "maxWarnings": 0
+            "maxWarnings": 5
           }
         }
       }

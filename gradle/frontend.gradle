@@ -1,7 +1,8 @@
 apply plugin: "com.github.node-gradle.node"
 
 node {
-    nodeModulesDir = file("${project.projectDir}/frontend")
+    download = true
+    nodeProjectDir = file("${project.projectDir}/frontend")
 }
 
 npmInstall {
@@ -15,7 +16,7 @@ npmInstall {
     outputs.cacheIf { true }
     outputs.dir("${project.projectDir}/frontend/node_modules")
             .withPropertyName("node-modules")
-    outputs.dir("${project.projectDir}/frontend/package-lock.json")
+    outputs.file("${project.projectDir}/frontend/package-lock.json")
             .withPropertyName("packages-lock")
 }
 
@@ -28,7 +29,7 @@ task buildFrontend(type: NpmTask, dependsOn: [npmInstall, "lintFrontend"]) {
     inputs.file("${project.projectDir}/frontend/package-lock.json")
             .withPropertyName("packagesLock")
             .withPathSensitivity(PathSensitivity.RELATIVE)
-    inputs.file("${project.projectDir}/frontend/src")
+    inputs.dir("${project.projectDir}/frontend/src")
             .withPropertyName("src")
             .withPathSensitivity(PathSensitivity.RELATIVE)
 
@@ -62,7 +63,7 @@ task lintFrontend(type: NpmTask, dependsOn: npmInstall) {
     inputs.file("${project.projectDir}/frontend/package-lock.json")
             .withPropertyName("packagesLock")
             .withPathSensitivity(PathSensitivity.RELATIVE)
-    inputs.file("${project.projectDir}/frontend/src")
+    inputs.dir("${project.projectDir}/frontend/src")
             .withPropertyName("src")
             .withPathSensitivity(PathSensitivity.RELATIVE)
 

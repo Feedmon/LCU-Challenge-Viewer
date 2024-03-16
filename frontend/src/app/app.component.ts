@@ -8,7 +8,7 @@ import {TestService} from "./services/test.service";
 })
 export class AppComponent {
   title = 'oof';
-  text: string = "";
+  text = "";
   mes: string | undefined;
   times = 0;
 

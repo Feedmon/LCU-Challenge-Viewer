@@ -21,11 +21,9 @@ task pmdCompile(type: Pmd, group: "verification") {
 
     reports {
         xml {
-            enabled = true
             destination = file("$project.buildDir/reports/pmd/pmd-compile.xml")
         }
         html {
-            enabled = true
             destination = file("$project.buildDir/reports/pmd/pmd-compile.html")
         }
     }
