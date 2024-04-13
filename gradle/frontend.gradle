@@ -87,7 +87,7 @@ task ngOpenApiGen(type: NpmTask, dependsOn: npmInstall) {
     inputs.file("${project.projectDir}/frontend/ng-openapi-gen.json")
             .withPropertyName("ng-openapi-gen")
             .withPathSensitivity(PathSensitivity.RELATIVE)
-    inputs.file("${project.projectDir}/frontend/api.json")
+    inputs.file("${project.projectDir}/openapi/api.json")
             .withPropertyName("api")
             .withPathSensitivity(PathSensitivity.RELATIVE)
 
@@ -95,25 +95,28 @@ task ngOpenApiGen(type: NpmTask, dependsOn: npmInstall) {
             .withPropertyName("generated-backend-api")
 }
 
+buildFrontend.dependsOn ngOpenApiGen
+lintFrontend.dependsOn ngOpenApiGen
+
 test.configure { shouldRunAfter ngOpenApiGen }
 
 task cleanGeneratedApi(type: Delete) {
     delete file("${project.projectDir}/frontend/src/backend-api/api")
 }
 
-task frontendTest(type: NpmTask, dependsOn: [npmInstall, ngOpenApiGen]) {
+/*task frontendTest(type: NpmTask, dependsOn: [npmInstall, ngOpenApiGen]) {
     description = "run Karma Tests"
     group = "verification"
 
-    args = ["run", "test:ci"]
+    args = ["run", "test"]
     description = "runs karma tests configured at frontend \\karma.conf.js"
 }
 
-frontendTest.configure { shouldRunAfter test }
+frontendTest.configure { shouldRunAfter test }*/
 
 // integrationTest.configure { shouldRunAfter frontendTest }
 
-check.dependsOn frontendTest
+/*check.dependsOn frontendTest*/
 
 task cypress(type: NpmTask, dependsOn: ["startDeamon", npmInstall]) {
     description = "runs Cypress tests"

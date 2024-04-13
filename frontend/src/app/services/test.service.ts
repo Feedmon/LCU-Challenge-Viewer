@@ -1,7 +1,10 @@
 import {Injectable} from '@angular/core';
 import {TestControllerService} from "../../backend-api/api/services/test-controller.service";
-import {CreateClassRequestDto} from "../../backend-api/api/models/create-class-request-dto";
-import {SubjectDto} from "../../backend-api/api/models/subject-dto";
+import {SpecialChallengesDto} from "../../backend-api/api/models/special-challenges-dto";
+import {
+  LolChampionsCollectionsChampionSkin
+} from "../../backend-api/api/models/lol-champions-collections-champion-skin";
+import {Champion} from "../../backend-api/api/models/champion";
 
 @Injectable()
 export class TestService {
@@ -9,11 +12,34 @@ export class TestService {
   constructor(private testControllerService: TestControllerService) {
   }
 
-  getAllSubjects(): Promise<SubjectDto[]> {
-    return this.testControllerService.getAllSubjects().toPromise();
+
+  getConnectionStatus(): Promise<boolean> {
+    return this.testControllerService.getLcuConnectionStatus().toPromise();
   }
 
-  createSubject(createClassRequest: CreateClassRequestDto): Promise<void> {
-    return this.testControllerService.create({body: createClassRequest}).toPromise()
+
+
+  startConnection(): void{
+    this.testControllerService.startConnection().toPromise();
+  }
+
+  stopConnection(): void{
+    this.testControllerService.stopConnection().toPromise();
+  }
+
+  getChallenges(): Promise<SpecialChallengesDto[]> {
+  return this.testControllerService.idSpecificChallenges().toPromise();
+  }
+
+  getChallengeInfo(challengeName: string): Promise<SpecialChallengesDto> {
+    return this.testControllerService.getChallengeInfo({challengeName}).toPromise();
+  }
+
+  getSkinForId(skinId: number): Promise<LolChampionsCollectionsChampionSkin> {
+    return this.testControllerService.getSkinForId({ skinId}).toPromise();
+  }
+
+  getChampionForId(championId: number): Promise<Champion> {
+    return this.testControllerService.getChampionForId({ championId}).toPromise();
   }
 }

@@ -12,7 +12,7 @@ export class SidebarComponent {
 
   create(): boolean {
     console.log("working");
-    this.openMaterialDialogService.open();
+    //this.openMaterialDialogService.open();
 
     return "a" > "b";
   }

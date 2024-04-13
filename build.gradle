@@ -1,6 +1,7 @@
 buildscript {
     repositories {
         mavenLocal()
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -63,12 +64,14 @@ ext {
     ExecFork = com.github.psxpaul.task.ExecFork
     OpenApiGeneratorTask = org.springdoc.openapi.gradle.plugin.OpenApiGeneratorTask
 }
+
 configurations {
     webApp
 }
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 ext {
@@ -76,6 +79,9 @@ ext {
 }
 
 dependencies {
+    // LCU Connector
+    implementation 'com.github.stirante:lol-client-java-api:1.1.7'
+
     implementation 'com.github.javaparser:javaparser-core:3.13.5'
 
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -107,13 +113,6 @@ tasks.named('asciidoctor') {
     inputs.dir snippetsDir
     dependsOn test
 }
-
-bootJar {
-    into('BOOT-INF/classes/static'){
-        from configurations.webApp
-    }
-}
-
 
 apply from: './gradle/bootJar.gradle'
 apply from: './gradle/clean.gradle'

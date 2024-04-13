@@ -33,7 +33,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
-    static class ApiErrorDto {
+   public static class ApiErrorDto {
         private final String message;
         private final int errorCode;
 

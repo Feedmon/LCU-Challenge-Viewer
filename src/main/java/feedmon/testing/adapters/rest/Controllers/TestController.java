@@ -1,42 +1,72 @@
 package feedmon.testing.adapters.rest.Controllers;
 
-import feedmon.testing.usecases.CreateClassUseCase;
-import feedmon.testing.usecases.GetAllSubjectsUseCase;
-import feedmon.testing.usecases.dtos.CreateClassRequestDto;
-import feedmon.testing.usecases.dtos.SubjectDto;
+import feedmon.testing.domain.challenges.Challenge;
+import feedmon.testing.domain.inventory.Champion;
+import feedmon.testing.service.LCUService;
+import feedmon.testing.usecases.GetLCUConnectionStatusUseCase;
+import feedmon.testing.usecases.dtos.SpecialChallengesDto;
+import generated.LolChampionsCollectionsChampionSkin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static feedmon.testing.util.Constants.TEXT_PLAIN_UTF_8_VALUE;
-
 @RestController
 @RequestMapping("/api/testing")
 public class TestController {
 
-    private final GetAllSubjectsUseCase getAllSubjectsUseCase;
-    private final CreateClassUseCase createClassUseCase;
+    private final GetLCUConnectionStatusUseCase getLCUConnectionStatusUseCase;
+    private final LCUService lcuService;
 
     @Autowired
-    public TestController(GetAllSubjectsUseCase getAllSubjectsUseCase,
-                          CreateClassUseCase createClassUseCase) {
-        this.getAllSubjectsUseCase = getAllSubjectsUseCase;
-        this.createClassUseCase = createClassUseCase;
+    public TestController(GetLCUConnectionStatusUseCase getLCUConnectionStatusUseCase,
+                          LCUService lcuService) {
+        this.getLCUConnectionStatusUseCase = getLCUConnectionStatusUseCase;
+        this.lcuService = lcuService;
     }
 
-    @GetMapping(value = "")
-    public List<SubjectDto> getAllSubjects() {
-        return this.getAllSubjectsUseCase.execute();
+    @GetMapping(value = "connection-status")
+    public Boolean getLCUConnectionStatus() {
+        return getLCUConnectionStatusUseCase.execute();
     }
 
-    @GetMapping(value = "{id}", produces = TEXT_PLAIN_UTF_8_VALUE)
-    public String test(@PathVariable Long id) {
-        return "Working";
+    @PutMapping(value = "stop-connection")
+    public void stopConnection() {
+        lcuService.stopConnection();
     }
 
-    @PutMapping(value = "create")
-    public void create(@RequestBody CreateClassRequestDto createClassRequestDto) {
-        createClassUseCase.execute(new CreateClassUseCase.Input(createClassRequestDto));
+    @PutMapping(value = "start-connection")
+    public void startConnection() {
+        lcuService.startConnection();
+    }
+
+    @PostMapping(value = "execute-request")
+    public String executeApiRequest(@RequestBody String path) {
+        return lcuService.executeRequest(path);
+    }
+
+    @GetMapping(value = "challenge-data-as-string")
+    public List<Challenge> getChallengeDataAsString() {
+        return lcuService.getChallenges();
+    }
+
+    @GetMapping(value = "id-specific-challenges")
+    public List<SpecialChallengesDto> idSpecificChallenges() {
+        return lcuService.getChallengesCompletionInfo();
+    }
+
+    @GetMapping(value = "challenge")
+    public SpecialChallengesDto getChallengeInfo(@RequestParam String challengeName){
+        return lcuService.getChallengeForName(challengeName);
+    }
+
+    @GetMapping(value = "skin")
+    public LolChampionsCollectionsChampionSkin getSkinForId(@RequestParam Integer skinId){
+        return lcuService.getSkinForId(skinId);
+    }
+
+    @GetMapping(value = "champion")
+    public Champion getChampionForId(@RequestParam Integer championId){
+        return lcuService.getChampionForId(championId);
     }
 }

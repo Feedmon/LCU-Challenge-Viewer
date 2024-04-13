@@ -1,35 +1,54 @@
 import {Component, OnInit} from "@angular/core";
-import {MatTableDataSource} from "@angular/material/table";
 import {TestService} from "../services/test.service";
-import {SubjectDto} from "../../backend-api/api/models/subject-dto";
+import {SpecialChallengesDto} from "../../backend-api/api/models/special-challenges-dto";
 
 @Component({
   selector: 'app-baumig',
   templateUrl: 'baumig.component.html'
 })
 export class BaumigComponent implements OnInit {
-  tableData: SubjectDto[] = [];
 
-  dataSource = new MatTableDataSource<SubjectDto>();
-  displayedColumns = ["name", "teacher", "id"];
+
+  status = "";
+  challenges: SpecialChallengesDto[];
+
 
   constructor(private testService: TestService) {
   }
 
   ngOnInit(): void {
-    this.testService.getAllSubjects().then(response => {
-      this.tableData = response;
-      this.dataSource.data = this.tableData;
-    })
+    this.testService.getConnectionStatus().then(resp => {
+      if (!resp) {
+        this.status = "Not Connected";
+      } else {
+        this.getChallenges();
+        this.status = "Connected";
+      }
+    });
   }
 
 
-  typedSubject(untypedSubject: SubjectDto): SubjectDto {
-    return untypedSubject;
+  testConnection(): void {
+    this.testService.getConnectionStatus().then(resp => {
+      if (!resp) {
+        this.status = "Not Connected";
+      } else {
+        this.status = "Connected";
+      }
+    });
   }
 
-  getValue(Subject: SubjectDto, columnName: string) {
-    // @ts-ignore
-    return Subject[columnName];
+  getChallenges(): void {
+    this.testService.getChallenges().then(response => {
+      this.challenges = response;
+    });
+  }
+
+  startConnection(): void {
+    this.testService.startConnection();
+  }
+
+  stopConnection(): void {
+    this.testService.stopConnection();
   }
 }

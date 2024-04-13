@@ -1,0 +1,7 @@
+<div *ngIf="challenge">
+available amount: {{challenge.notCompletedNames.length}}
+  <br/>
+<div *ngFor="let name of challenge.notCompletedNames ">
+  {{name}}
+</div>
+</div>

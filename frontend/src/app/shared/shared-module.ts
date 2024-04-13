@@ -8,10 +8,15 @@ import {OpenMaterialDialogService} from "./open-material-dialog.service";
 import {MatSortModule} from "@angular/material/sort";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {NgForOf, NgIf} from "@angular/common";
+import {ChallengeTableOverviewComponent} from "../baumig/table/challenge-table-overview.component";
+import {ChallengeViewComponent} from "../challenge-view/challenge-view.component";
+import {RouterModule} from "@angular/router";
 
 @NgModule({
   declarations: [
-    BaumigComponent
+    BaumigComponent,
+    ChallengeTableOverviewComponent,
+    ChallengeViewComponent
   ],
   imports: [
     MaterialModule,
@@ -19,6 +24,7 @@ import {NgForOf, NgIf} from "@angular/common";
     MatPaginatorModule,
     NgIf,
     NgForOf,
+    RouterModule,
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: HttpBaseInterceptor, multi: true},

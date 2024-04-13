@@ -5,8 +5,10 @@ jar {
 bootJar {
     dependsOn 'buildFrontend'
 
-    into('BOOT-INF/classes/static') {
-        from "frontend/dist"
+    bootJar {
+        into('BOOT-INF/classes/static'){
+            from configurations.webApp
+        }
     }
 }
 

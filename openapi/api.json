@@ -1,25 +1,459 @@
 {
   "components": {
     "schemas": {
-      "SubjectDto": {
+      "LolChampionsCollectionsChampionChroma": {
         "type": "object",
         "properties": {
-          "teacher": {
+          "chromaPath": {
             "type": "string"
           },
-          "goodClassMates": {
+          "championId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "stillObtainable": {
+            "type": "boolean"
+          },
+          "ownership": {
+            "$ref": "#/components/schemas/LolChampionsCollectionsOwnership"
+          },
+          "lastSelected": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "colors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "LolChampionsCollectionsRental": {
+        "type": "object",
+        "properties": {
+          "purchaseDate": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "rented": {
+            "type": "boolean"
+          },
+          "endDate": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "winCountRemaining": {
+            "format": "int32",
+            "type": "integer"
+          }
+        }
+      },
+      "LolChampionsCollectionsChampionSkinEmblemPosition": {
+        "type": "object",
+        "properties": {
+          "horizontal": {
+            "type": "string"
+          },
+          "vertical": {
+            "type": "string"
+          }
+        }
+      },
+      "LolChampionsCollectionsChampionSkinEmblemPath": {
+        "type": "object",
+        "properties": {
+          "small": {
+            "type": "string"
+          },
+          "large": {
+            "type": "string"
+          }
+        }
+      },
+      "LolChampionsCollectionsChampionSkin": {
+        "type": "object",
+        "properties": {
+          "rarityGemPath": {
+            "type": "string"
+          },
+          "loadScreenPath": {
+            "type": "string"
+          },
+          "championId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "stillObtainable": {
+            "type": "boolean"
+          },
+          "tilePath": {
+            "type": "string"
+          },
+          "chromas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LolChampionsCollectionsChampionChroma"
+            }
+          },
+          "lastSelected": {
+            "type": "boolean"
+          },
+          "splashPath": {
+            "type": "string"
+          },
+          "uncenteredSplashPath": {
+            "type": "string"
+          },
+          "chromaPath": {
+            "type": "string"
+          },
+          "skinType": {
+            "type": "string"
+          },
+          "emblems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LolChampionsCollectionsChampionSkinEmblem"
+            }
+          },
+          "featuresText": {
+            "type": "string"
+          },
+          "ownership": {
+            "$ref": "#/components/schemas/LolChampionsCollectionsOwnership"
+          },
+          "name": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "isBase": {
+            "type": "boolean"
+          },
+          "splashVideoPath": {
+            "type": "string"
+          }
+        }
+      },
+      "Challenge": {
+        "type": "object",
+        "properties": {
+          "previousLevel": {
+            "type": "string"
+          },
+          "retireTimestamp": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "hasLeaderboard": {
+            "type": "boolean"
+          },
+          "playersInLevel": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "description": {
+            "type": "string"
+          },
+          "nextThreshold": {
+            "format": "double",
+            "type": "number"
+          },
+          "source": {
+            "type": "string"
+          },
+          "isApex": {
+            "type": "boolean"
+          },
+          "nextLevelIconPath": {
+            "type": "string"
+          },
+          "capstoneGroupName": {
+            "type": "string"
+          },
+          "levelToIconPath": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "capstoneGroupId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "availableIds": {
+            "type": "array",
+            "items": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          "idListType": {
+            "type": "string"
+          },
+          "valueMapping": {
+            "type": "string"
+          },
+          "friendsAtLevels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FriendsAtLevel"
+            }
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "currentLevelAchievedTime": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "childrenIds": {
+            "type": "array",
+            "items": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          "pointsAwarded": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "nextLevel": {
+            "type": "string"
+          },
+          "descriptionShort": {
+            "type": "string"
+          },
+          "priority": {
+            "format": "double",
+            "type": "number"
+          },
+          "previousValue": {
+            "format": "double",
+            "type": "number"
+          },
+          "parentId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "isCapstone": {
+            "type": "boolean"
+          },
+          "currentLevel": {
+            "$ref": "#/components/schemas/Leagues"
+          },
+          "currentThreshold": {
+            "format": "double",
+            "type": "number"
+          },
+          "gameModes": {
             "type": "array",
             "items": {
               "type": "string"
             }
           },
-          "topics": {
+          "parentName": {
+            "type": "string"
+          },
+          "thresholds": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Reward"
+            },
+            "type": "object"
+          },
+          "percentile": {
+            "format": "double",
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "isReverseDirection": {
+            "type": "boolean"
+          },
+          "completedIds": {
+            "type": "array",
+            "items": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          "position": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "category": {
+            "type": "string"
+          },
+          "iconPath": {
+            "type": "string"
+          },
+          "currentValue": {
+            "format": "double",
+            "type": "number"
+          }
+        }
+      },
+      "LolChampionsCollectionsOwnership": {
+        "type": "object",
+        "properties": {
+          "owned": {
+            "type": "boolean"
+          },
+          "freeToPlayReward": {
+            "type": "boolean"
+          },
+          "rental": {
+            "$ref": "#/components/schemas/LolChampionsCollectionsRental"
+          }
+        }
+      },
+      "FriendsAtLevel": {
+        "type": "object",
+        "properties": {
+          "level": {
+            "$ref": "#/components/schemas/Leagues"
+          },
+          "friends": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "LolChampionsCollectionsChampionSkinEmblem": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "positions": {
+            "$ref": "#/components/schemas/LolChampionsCollectionsChampionSkinEmblemPosition"
+          },
+          "emblemPath": {
+            "$ref": "#/components/schemas/LolChampionsCollectionsChampionSkinEmblemPath"
+          }
+        }
+      },
+      "SpecialChallengesDto": {
+        "type": "object",
+        "required": [
+          "availableIds",
+          "availableNames",
+          "challengeDescription",
+          "challengeLeague",
+          "challengeName",
+          "challengeType",
+          "completedIds",
+          "completedNames",
+          "completionAmount",
+          "completionAmountForMaster",
+          "id",
+          "notCompletedIds",
+          "notCompletedNames"
+        ],
+        "properties": {
+          "completedNames": {
             "type": "array",
             "items": {
               "type": "string"
             }
           },
-          "work": {
+          "availableNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "challengeType": {
+            "type": "string"
+          },
+          "challengeDescription": {
+            "type": "string"
+          },
+          "completionAmountForMaster": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "challengeLeague": {
+            "type": "string"
+          },
+          "notCompletedIds": {
+            "type": "array",
+            "items": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          "completionAmount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "availableIds": {
+            "type": "array",
+            "items": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          "challengeName": {
+            "type": "string"
+          },
+          "id": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "completedIds": {
+            "type": "array",
+            "items": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          "notCompletedNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Champion": {
+        "type": "object",
+        "properties": {
+          "skins": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LolChampionsCollectionsChampionSkin"
+            }
+          },
+          "baseLoadScreenPath": {
+            "type": "string"
+          },
+          "baseSplashPath": {
+            "type": "string"
+          },
+          "purchased": {
+            "type": "integer"
+          },
+          "roles": {
             "type": "array",
             "items": {
               "type": "string"
@@ -28,34 +462,42 @@
           "name": {
             "type": "string"
           },
-          "lesson": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "alias": {
+            "type": "string"
           },
           "id": {
-            "format": "int64",
+            "format": "int32",
+            "type": "integer"
+          },
+          "squarePortraitPath": {
+            "type": "string"
+          }
+        }
+      },
+      "Reward": {
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "format": "int32",
             "type": "integer"
           }
         }
       },
-      "CreateClassRequestDto": {
-        "type": "object",
-        "properties": {
-          "teacher": {
-            "type": "string"
-          },
-          "className": {
-            "type": "string"
-          },
-          "goodMates": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
+      "Leagues": {
+        "type": "string",
+        "enum": [
+          "IRON",
+          "BRONZE",
+          "SILVER",
+          "GOLD",
+          "PLATINUM",
+          "EMERALD",
+          "DIAMOND",
+          "MASTER",
+          "GRANDMASTER",
+          "CHALLENGER",
+          "NONE"
+        ]
       }
     }
   },
@@ -67,50 +509,75 @@
   ],
   "openapi": "3.0.1",
   "paths": {
-    "/api/testing/{id}": {
+    "/api/testing/challenge-data-as-string": {
       "get": {
-        "operationId": "test",
+        "operationId": "getChallengeDataAsString",
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "text/plain;charset\u003dUTF8": {
+              "application/json": {
                 "schema": {
-                  "type": "string"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Challenge"
+                  }
                 }
               }
             }
           }
         },
-        "parameters": [
-          {
-            "schema": {
-              "format": "int64",
-              "type": "integer"
-            },
-            "in": "path",
-            "name": "id",
-            "required": true
-          }
-        ],
         "tags": [
           "test-controller"
         ]
       }
     },
-    "/api/testing/create": {
-      "put": {
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateClassRequestDto"
+    "/api/testing/id-specific-challenges": {
+      "get": {
+        "operationId": "idSpecificChallenges",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SpecialChallengesDto"
+                  }
+                }
               }
             }
-          },
-          "required": true
+          }
         },
-        "operationId": "create",
+        "tags": [
+          "test-controller"
+        ]
+      }
+    },
+    "/api/testing/connection-status": {
+      "get": {
+        "operationId": "getLCUConnectionStatus",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "test-controller"
+        ]
+      }
+    },
+    "/api/testing/start-connection": {
+      "put": {
+        "operationId": "startConnection",
         "responses": {
           "200": {
             "description": "OK"
@@ -121,19 +588,131 @@
         ]
       }
     },
-    "/api/testing": {
+    "/api/testing/stop-connection": {
+      "put": {
+        "operationId": "stopConnection",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "test-controller"
+        ]
+      }
+    },
+    "/api/testing/skin": {
       "get": {
-        "operationId": "getAllSubjects",
+        "operationId": "getSkinForId",
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SubjectDto"
-                  }
+                  "$ref": "#/components/schemas/LolChampionsCollectionsChampionSkin"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "skinId",
+            "required": true
+          }
+        ],
+        "tags": [
+          "test-controller"
+        ]
+      }
+    },
+    "/api/testing/champion": {
+      "get": {
+        "operationId": "getChampionForId",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Champion"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "championId",
+            "required": true
+          }
+        ],
+        "tags": [
+          "test-controller"
+        ]
+      }
+    },
+    "/api/testing/challenge": {
+      "get": {
+        "operationId": "getChallengeInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpecialChallengesDto"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "challengeName",
+            "required": true
+          }
+        ],
+        "tags": [
+          "test-controller"
+        ]
+      }
+    },
+    "/api/testing/execute-request": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "operationId": "executeApiRequest",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
                 }
               }
             }

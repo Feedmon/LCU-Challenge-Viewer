@@ -1,7 +1,6 @@
 import {Injectable} from "@angular/core";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {ComponentType} from "@angular/cdk/portal";
-import {CreateClassComponent} from "../create-class/create-class/create-class.component";
 
 @Injectable()
 export class OpenMaterialDialogService {
@@ -18,8 +17,8 @@ export class OpenMaterialDialogService {
     });
   }
 
-  open() {
+/*   open() {
     this.openModal<CreateClassComponent, string, boolean>(CreateClassComponent, "huehue", ["material"])
       .afterClosed().toPromise().then(boolean => console.log(boolean));
-  }
+  } */
 }

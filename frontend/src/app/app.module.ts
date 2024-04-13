@@ -9,15 +9,14 @@ import {MaterialModule} from "./material/material.module";
 import {MatIconRegistry} from "@angular/material/icon";
 import {SharedModule} from "./shared/shared-module";
 import {OpenMaterialDialogService} from "./shared/open-material-dialog.service";
-import {CreateClassComponent} from './create-class/create-class/create-class.component';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {FormsModule} from "@angular/forms";
+import {RouteParameters} from "./route-parameters";
 
 @NgModule({
   declarations: [
     AppComponent,
     SidebarComponent,
-    CreateClassComponent,
   ],
   imports: [
     BrowserModule,
@@ -30,6 +29,7 @@ import {FormsModule} from "@angular/forms";
   ],
   providers: [
     OpenMaterialDialogService,
+    RouteParameters
   ],
   bootstrap: [AppComponent]
 })

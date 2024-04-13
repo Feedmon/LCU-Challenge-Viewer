@@ -12,6 +12,7 @@ import org.springframework.context.event.EventListener;
 import java.lang.invoke.MethodHandles;
 
 
+@PropertySource(value = "classpath:META-INF/build-info.properties", ignoreResourceNotFound = true)
 @SpringBootApplication
 public class Application {
 private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -26,6 +27,6 @@ private String serverPort;
 
     @EventListener(ApplicationReadyEvent.class)
     public void doSomethingAfterStartup() {
-        logger.info(String.format("Application is ready on %s (Port: %s)",baseUrl, serverPort));
+        logger.info(String.format("Challenge Viewer App is ready on %s (Port: %s)",baseUrl, serverPort));
     }
 }
