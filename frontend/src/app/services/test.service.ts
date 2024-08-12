@@ -5,6 +5,7 @@ import {
   LolChampionsCollectionsChampionSkin
 } from "../../backend-api/api/models/lol-champions-collections-champion-skin";
 import {Champion} from "../../backend-api/api/models/champion";
+import { Challenge } from '../../backend-api/api/models/challenge';
 
 @Injectable()
 export class TestService {
@@ -30,6 +31,10 @@ export class TestService {
   getChallenges(): Promise<SpecialChallengesDto[]> {
   return this.testControllerService.idSpecificChallenges().toPromise();
   }
+
+    reloadChallenges(): Promise<Challenge[]> {
+    return this.testControllerService.reloadChallengeData().toPromise();
+    }
 
   getChallengeInfo(challengeName: string): Promise<SpecialChallengesDto> {
     return this.testControllerService.getChallengeInfo({challengeName}).toPromise();

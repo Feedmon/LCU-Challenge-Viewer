@@ -44,6 +44,12 @@ export class BaumigComponent implements OnInit {
     });
   }
 
+    reloadChallenges(): void {
+      this.testService.reloadChallenges().then(response => {
+      this.getChallenges()
+      });
+    }
+
   startConnection(): void {
     this.testService.startConnection();
   }

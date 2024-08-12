@@ -532,6 +532,29 @@
         ]
       }
     },
+    "/api/testing/reload-challenge-data": {
+      "get": {
+        "operationId": "reloadChallengeData",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Challenge"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "test-controller"
+        ]
+      }
+    },
     "/api/testing/id-specific-challenges": {
       "get": {
         "operationId": "idSpecificChallenges",
