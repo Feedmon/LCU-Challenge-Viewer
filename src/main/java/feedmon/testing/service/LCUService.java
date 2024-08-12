@@ -47,6 +47,7 @@ public class LCUService {
             }
         }
         loggedInSummoner = executeWithExceptionWrapper(() -> clientApi.getCurrentSummoner());
+        getChallenges(true);
     }
 
     public void startConnection() {
@@ -83,7 +84,7 @@ public class LCUService {
         List<Champion> champions = getChampions();
         List<LolChampionsCollectionsChampionSkin> skins = getAllSkins();
 
-        List<Challenge> challenges = getChallenges().stream().filter(challenge -> !challenge.getCompletedIds().isEmpty()).filter(challenge -> !challenge.getIdListType().equals(ITEM.name())).toList();
+        List<Challenge> challenges = getChallenges(false).stream().filter(challenge -> !challenge.getCompletedIds().isEmpty()).filter(challenge -> !challenge.getIdListType().equals(ITEM.name())).toList();
 
         storedChallengeCompletionInfo = challenges.stream().map(chall -> new SpecialChallengesDto(chall, skins, champions)).toList();
         return storedChallengeCompletionInfo;
@@ -148,8 +149,8 @@ public class LCUService {
         executeWithExceptionWrapper(() -> clientApi.executeGet("/lol-champions/v1/inventories/" + loggedInSummoner.summonerId + "/champions/" + id + "/skins", LolChampionsCollectionsChampionSkin[].class));
     }
 
-    public List<Challenge> getChallenges() {
-        if (challenges != null) {
+    public List<Challenge> getChallenges(boolean reload) {
+        if (challenges != null && !reload) {
             return challenges;
         }
 

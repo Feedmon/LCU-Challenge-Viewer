@@ -47,7 +47,12 @@ public class TestController {
 
     @GetMapping(value = "challenge-data-as-string")
     public List<Challenge> getChallengeDataAsString() {
-        return lcuService.getChallenges();
+        return lcuService.getChallenges(true);
+    }
+
+    @GetMapping(value = "reload-challenge-data")
+    public List<Challenge> reloadChallengeData() {
+        return lcuService.getChallenges(true);
     }
 
     @GetMapping(value = "id-specific-challenges")

@@ -11,6 +11,8 @@ import {SpecialChallengesDto} from "../../../backend-api/api/models/special-chal
 export class ChallengeTableOverviewComponent implements OnInit, AfterViewInit {
   @Input() challenges: SpecialChallengesDto[]
 
+  hideLevelMasterPlus = true;
+
   // if wanted to  be case-insensitive use sortingDataAccessor https://github.com/angular/components/issues/9205
   @ViewChild(MatSort) sort: MatSort ;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -21,7 +23,11 @@ export class ChallengeTableOverviewComponent implements OnInit, AfterViewInit {
   displayedColumns = ["name", "type", "level"];
 
   ngOnInit(): void {
+  if(this.hideLevelMasterPlus){
+    this.dataSource.data = this.challenges.filter(challenge => challenge.challengeLeague !== 'H Master');
+    } else {
     this.dataSource.data = this.challenges;
+    }
   }
 
   ngAfterViewInit(): void {
