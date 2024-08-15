@@ -18,6 +18,7 @@ import generated.UriMap;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.*;
 
 import static feedmon.testing.util.enums.ChallengeAvailableIdType.ITEM;
@@ -27,8 +28,8 @@ import static feedmon.testing.util.enums.ChallengeAvailableIdType.ITEM;
 @Service
 public class LCUService {
 
-    private ClientApi clientApi = new ClientApi();
-    private final LolSummonerSummoner loggedInSummoner;
+    private ClientApi clientApi;
+    private  LolSummonerSummoner loggedInSummoner;
 
     private List<Challenge> challenges;
     private List<Champion> champions;
@@ -36,9 +37,19 @@ public class LCUService {
     private List<SpecialChallengesDto> storedChallengeCompletionInfo;
 
     public LCUService() {
+        try {
+            startConnection();
+        }catch(Exception ignored){
+        }
+    }
+
+    public void startConnection() {
+        clientApi = new ClientApi();
         clientApi.start();
 
-        while (!clientApi.isConnected()) {
+        int counter = 0;
+        while (!clientApi.isConnected() && counter <1000) {
+            counter++;
             try {
                 //noinspection BusyWait
                 Thread.sleep(5);
@@ -46,13 +57,11 @@ public class LCUService {
                 throw new RuntimeException(e);
             }
         }
+        if(!clientApi.isConnected()){
+            throw new RuntimeException("could not connect");
+        }
         loggedInSummoner = executeWithExceptionWrapper(() -> clientApi.getCurrentSummoner());
         getChallenges(true);
-    }
-
-    public void startConnection() {
-        clientApi = new ClientApi();
-        clientApi.start();
     }
 
     public void stopConnection() {
@@ -76,6 +85,10 @@ public class LCUService {
         return champions.stream().filter(champion -> champion.id.equals(id)).findFirst().orElseThrow();
     }
 
+    public List<Champion> getAllChampions() {
+        return champions;
+    }
+
     public List<SpecialChallengesDto> getChallengesCompletionInfo() {
 /*        if (storedChallengeCompletionInfo != null) {
             return storedChallengeCompletionInfo;
@@ -84,6 +97,7 @@ public class LCUService {
         List<Champion> champions = getChampions();
         List<LolChampionsCollectionsChampionSkin> skins = getAllSkins();
 
+        // todo another call for all challs
         List<Challenge> challenges = getChallenges(false).stream().filter(challenge -> !challenge.getCompletedIds().isEmpty()).filter(challenge -> !challenge.getIdListType().equals(ITEM.name())).toList();
 
         storedChallengeCompletionInfo = challenges.stream().map(chall -> new SpecialChallengesDto(chall, skins, champions)).toList();
@@ -109,6 +123,11 @@ public class LCUService {
             List<Champion> championsMapped = objectMapper.readValue(champsJson, type);
             championsMapped.sort(Comparator.comparing(champion -> champion.name));
             champions = championsMapped.stream().filter(champion -> champion.id >= 0).toList();
+
+            champions.forEach(champ -> {
+                champ.squarePortraitJpg =   executeByteRequest(champ.squarePortraitPath);
+            });
+
             return champions;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -131,8 +150,16 @@ public class LCUService {
         }
     }
 
+    private byte[] executeByteRequest(String path){
+        try {
+         return clientApi.executeBinaryGet(path).readAllBytes();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public boolean testConnection() {
-        return clientApi.isConnected();
+        return this.loggedInSummoner!= null && clientApi.isConnected();
     }
 
     private List<LolChampionsCollectionsChampionSkin> getAllSkins() {
@@ -160,11 +187,14 @@ public class LCUService {
 
         try {
             HashMap<Integer, Challenge> challengeMap = objectMapper.readValue(executeRequest("/lol-challenges/v1/challenges/local-player"), type);
-            challengeMap.forEach((key, value) -> challenges.add(value));
+            challengeMap.forEach((key, value) -> {
+                // this is standard first start of time tracking
+                value.setRetired(value.getRetireTimestamp().after(Timestamp.valueOf("1970-01-01 01:00:00.0")) && value.getRetireTimestamp().before(new Date()));
+                challenges.add(value);
+            });
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-
         this.challenges = challenges;
 
         return challenges;

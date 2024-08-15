@@ -18,14 +18,12 @@ export class TestService {
     return this.testControllerService.getLcuConnectionStatus().toPromise();
   }
 
-
-
-  startConnection(): void{
-    this.testControllerService.startConnection().toPromise();
+  startConnection(): Promise<void>{
+   return this.testControllerService.startConnection().toPromise();
   }
 
-  stopConnection(): void{
-    this.testControllerService.stopConnection().toPromise();
+  stopConnection(): Promise<void>{
+   return this.testControllerService.stopConnection().toPromise();
   }
 
   getChallenges(): Promise<SpecialChallengesDto[]> {
@@ -46,5 +44,9 @@ export class TestService {
 
   getChampionForId(championId: number): Promise<Champion> {
     return this.testControllerService.getChampionForId({ championId}).toPromise();
+  }
+
+  getAllChampions(): Promise<Champion[]> {
+    return this.testControllerService.getAllChampions().toPromise();
   }
 }

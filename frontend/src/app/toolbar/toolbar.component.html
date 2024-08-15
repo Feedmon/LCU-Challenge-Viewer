@@ -1,0 +1,19 @@
+<div class="top-bar">
+  <div class="button-group">
+    <button mat-button (click)="startConnection()">try connecting to client</button>
+    <button mat-button (click)="stopConnection()">stop connection</button>
+    <button mat-button (click)="reloadChallenges()">reload challenge data</button>
+  </div>
+
+  <div class="status">
+    Status:
+
+    <span *ngIf="connected" class="connected">
+  Connected
+</span>
+
+    <span *ngIf="!connected" class="disconnected">
+  Disconnected
+</span>
+  </div>
+</div>

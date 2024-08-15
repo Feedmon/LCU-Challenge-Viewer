@@ -1,0 +1,36 @@
+<mat-form-field appearance="fill">
+  <mat-label>Choose which Challenges are visualized</mat-label>
+  <mat-select [formControl]="selectedOptions" (openedChange)="selectOpenedOrClosed($event)" multiple>
+    <mat-option *ngFor="let option of options" [value]="option" [matTooltip]="getDescriptionForChallengeName(option)">
+        {{ option }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<br/>
+
+<div class="table-container" *ngIf="champions && challenges">
+
+    <mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="champion">
+          <mat-header-cell *matHeaderCellDef> Champion </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+              <img [matTooltip]="element.name" [src]="'data:image/jpeg;base64,' + element.image" alt="Image" style="width: 45px; height: 45px;">
+            {{element.name}}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container *ngFor="let column of displayedColumns.slice(1)" [matColumnDef]="column">
+          <mat-header-cell *matHeaderCellDef [matTooltip]="getDescriptionForChallengeName(column)" > {{ column }} </mat-header-cell>
+          <mat-cell *matCellDef="let element" [matTooltip]="element.name +' | ' + column" matTooltipPosition="left" [ngClass]="getCellColorClass(element.id, column)">
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+      </mat-table>
+  <mat-paginator [pageSizeOptions]="[1,5,9,15,21,25,49,255]"
+                 [pageSize]="175"
+                 [showFirstLastButtons]='true'></mat-paginator>
+</div>

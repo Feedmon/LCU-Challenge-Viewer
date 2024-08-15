@@ -1,0 +1,43 @@
+mat-header-cell, mat-cell {
+  border-right: 1px solid #ccc;
+}
+
+mat-header-cell:last-child, mat-cell:last-child {
+  border-right: none;
+}
+
+.green-cell {
+  background-color: #0b620b;
+}
+
+.red-cell {
+  background-color: #a52019;
+}
+
+.grey-cell {
+  background-color: grey;
+}
+
+.table-container {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.mat-header-cell, .mat-cell {
+  justify-content: center;
+  align-items: center;
+}
+
+.mat-header-cell:first-child,
+.mat-cell:first-child {
+  width: 85px;
+  min-width: 85px;
+  max-width: 85px;
+  overflow: hidden;
+}
+
+.mat-form-field {
+  padding-left: 15px;
+  padding-right: 15px;
+  width: calc(100% - 30px);;
+}

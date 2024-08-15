@@ -1,6 +1,8 @@
 import {Component, OnInit} from "@angular/core";
 import {TestService} from "../services/test.service";
 import {SpecialChallengesDto} from "../../backend-api/api/models/special-challenges-dto";
+import {Champion} from "../../backend-api/api/models/champion";
+import {ChallengeService} from "../services/challenge.service";
 
 @Component({
   selector: 'app-baumig',
@@ -9,32 +11,28 @@ import {SpecialChallengesDto} from "../../backend-api/api/models/special-challen
 export class BaumigComponent implements OnInit {
 
 
-  status = "";
+  connected: boolean;
   challenges: SpecialChallengesDto[];
+  champions: Champion[]
 
 
-  constructor(private testService: TestService) {
+  constructor(private challengerService: ChallengeService,
+              private testService: TestService) {
   }
 
   ngOnInit(): void {
     this.testService.getConnectionStatus().then(resp => {
-      if (!resp) {
-        this.status = "Not Connected";
-      } else {
+      if (resp) {
         this.getChallenges();
-        this.status = "Connected";
       }
+      this.connected = resp;
     });
   }
 
 
   testConnection(): void {
     this.testService.getConnectionStatus().then(resp => {
-      if (!resp) {
-        this.status = "Not Connected";
-      } else {
-        this.status = "Connected";
-      }
+      this.connected = resp;
     });
   }
 
@@ -42,19 +40,5 @@ export class BaumigComponent implements OnInit {
     this.testService.getChallenges().then(response => {
       this.challenges = response;
     });
-  }
-
-    reloadChallenges(): void {
-      this.testService.reloadChallenges().then(response => {
-      this.getChallenges()
-      });
-    }
-
-  startConnection(): void {
-    this.testService.startConnection();
-  }
-
-  stopConnection(): void {
-    this.testService.stopConnection();
   }
 }

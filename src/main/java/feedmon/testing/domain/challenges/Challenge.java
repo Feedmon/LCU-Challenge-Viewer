@@ -47,6 +47,7 @@ public class Challenge {
     private String source;
     private Map<Leagues, Reward> thresholds;
     private String valueMapping;
+    private boolean isRetired;
 
 
     public List<Integer> getAvailableIds() {
@@ -359,5 +360,13 @@ public class Challenge {
 
     public void setValueMapping(String valueMapping) {
         this.valueMapping = valueMapping;
+    }
+
+    public boolean isRetired() {
+        return isRetired;
+    }
+
+    public void setRetired(boolean retired) {
+        isRetired = retired;
     }
 }

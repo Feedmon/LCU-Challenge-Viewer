@@ -38,6 +38,8 @@ public class SpecialChallengesDto {
     private final Integer completionAmount;
     @NotNull
     private final Integer completionAmountForMaster;
+    @NotNull
+    private final boolean isRetired;
 
     public SpecialChallengesDto(Challenge challenge, List<LolChampionsCollectionsChampionSkin> allSkins, List<Champion> champions) {
         this.id = challenge.getId();
@@ -55,6 +57,7 @@ public class SpecialChallengesDto {
         this.challengeLeague = challenge.getCurrentLevel().getName();
         this.completionAmount = 0;//Integer.valueOf(Double.toString(challenge.getCurrentThreshold()));
         this.completionAmountForMaster = getCompletionAmountForMasterOrNull(challenge);
+        this.isRetired = challenge.isRetired();
     }
 
     private Integer getCompletionAmountForMasterOrNull(Challenge challenge){
@@ -143,5 +146,9 @@ public class SpecialChallengesDto {
 
     public List<String> getNotCompletedNames() {
         return notCompletedNames;
+    }
+
+    public boolean isRetired() {
+        return isRetired;
     }
 }

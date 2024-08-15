@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {HttpClientModule} from "@angular/common/http";
@@ -12,11 +11,14 @@ import {OpenMaterialDialogService} from "./shared/open-material-dialog.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {FormsModule} from "@angular/forms";
 import {RouteParameters} from "./route-parameters";
+import {ToolbarComponent} from "./toolbar/toolbar.component";
+import {MatToolbarModule} from "@angular/material/toolbar";
 
 @NgModule({
   declarations: [
     AppComponent,
     SidebarComponent,
+    ToolbarComponent,
   ],
   imports: [
     BrowserModule,
@@ -26,6 +28,7 @@ import {RouteParameters} from "./route-parameters";
     MaterialModule,
     SharedModule,
     FormsModule,
+    MatToolbarModule,
   ],
   providers: [
     OpenMaterialDialogService,

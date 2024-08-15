@@ -17,4 +17,5 @@ public class Champion {
     public List<String> roles;
     public List<LolChampionsCollectionsChampionSkin> skins;
     public String squarePortraitPath;
+    public byte[] squarePortraitJpg;
 }

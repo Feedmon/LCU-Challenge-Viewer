@@ -209,6 +209,9 @@
           "valueMapping": {
             "type": "string"
           },
+          "retired": {
+            "type": "boolean"
+          },
           "friendsAtLevels": {
             "type": "array",
             "items": {
@@ -416,6 +419,9 @@
           "challengeName": {
             "type": "string"
           },
+          "retired": {
+            "type": "boolean"
+          },
           "id": {
             "format": "int64",
             "type": "integer"
@@ -452,6 +458,13 @@
           },
           "purchased": {
             "type": "integer"
+          },
+          "squarePortraitJpg": {
+            "type": "array",
+            "items": {
+              "format": "byte",
+              "type": "string"
+            }
           },
           "roles": {
             "type": "array",
@@ -681,6 +694,29 @@
             "required": true
           }
         ],
+        "tags": [
+          "test-controller"
+        ]
+      }
+    },
+    "/api/testing/champions": {
+      "get": {
+        "operationId": "getAllChampions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Champion"
+                  }
+                }
+              }
+            }
+          }
+        },
         "tags": [
           "test-controller"
         ]

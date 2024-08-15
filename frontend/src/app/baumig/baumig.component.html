@@ -1,33 +1,3 @@
-<button mat-raised-button
-        color="primary"
-        (click)="testConnection()">
-  Test Connection
-</button>
-
-<button mat-raised-button
-        color="primary"
-        (click)="startConnection()">
-  Start Connection
-</button>
-
-<button mat-raised-button
-        color="primary"
-        (click)="stopConnection()">
-  Stop Connection
-</button>
-
-<button mat-raised-button
-        color="primary"
-        (click)="reloadChallenges()">
-  reload Challenges
-</button>
-
-<div>
-  {{status}}
-</div>
-
-<br/>
-
 <div *ngIf="challenges">
   <app-challenge-overview-table [challenges]="challenges"></app-challenge-overview-table>
 </div>

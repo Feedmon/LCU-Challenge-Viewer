@@ -74,4 +74,9 @@ public class TestController {
     public Champion getChampionForId(@RequestParam Integer championId){
         return lcuService.getChampionForId(championId);
     }
+
+    @GetMapping(value = "champions")
+    public List<Champion> getAllChampions(){
+        return lcuService.getAllChampions();
+    }
 }

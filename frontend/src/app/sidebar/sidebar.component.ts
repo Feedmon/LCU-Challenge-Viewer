@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {OpenMaterialDialogService} from "../shared/open-material-dialog.service";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
@@ -7,13 +7,14 @@ import {OpenMaterialDialogService} from "../shared/open-material-dialog.service"
 })
 export class SidebarComponent {
 
-  constructor(private openMaterialDialogService: OpenMaterialDialogService) {
+  constructor(private router: Router) {
   }
 
-  create(): boolean {
-    console.log("working");
-    //this.openMaterialDialogService.open();
+  goToChallengeView(): void {
+    this.router.navigate(["/challenges"]);
+  }
 
-    return "a" > "b";
+  goToChampionsView(): void {
+    this.router.navigate(["/champions"]);
   }
 }

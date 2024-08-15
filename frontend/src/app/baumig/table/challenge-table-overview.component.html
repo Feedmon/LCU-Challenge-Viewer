@@ -3,15 +3,33 @@
     <th mat-header-cell *matHeaderCellDef mat-sort-header="challengeName">Name</th>
     <td mat-cell *matCellDef="let untypedSubject">
       <ng-template [ngIf]="typedSpecialChallenge(untypedSubject)" let-challenge="ngIf">
-        <a class="clickable" [routerLink]="['/challenge-details',challenge.challengeName]">
+        <a class="clickable" [routerLink]="[getChallengeLink(challenge.challengeType),challenge.challengeName]">
           {{ challenge.challengeName }}
         </a>
       </ng-template>
     </td>
   </ng-container>
 
-  <ng-container matColumnDef="type">
+  <ng-container matColumnDef="description">
+    <th *matHeaderCellDef mat-sort-header="challengeDescription" mat-header-cell>Description</th>
+    <td *matCellDef="let untypedSubject" mat-cell>
+      <ng-template [ngIf]="typedSpecialChallenge(untypedSubject)" let-challenge="ngIf">
+        {{ challenge.challengeDescription }}
+      </ng-template>
+    </td>
+  </ng-container>
 
+  <ng-container matColumnDef="retired">
+    <th *matHeaderCellDef mat-sort-header="retired" mat-header-cell>Retired</th>
+    <td *matCellDef="let untypedSubject" mat-cell>
+      <ng-template [ngIf]="typedSpecialChallenge(untypedSubject)" let-challenge="ngIf">
+        <span *ngIf="challenge.retired" class="retired">retired</span>
+        <span *ngIf="!challenge.retired" class="progressable">progressable</span>
+      </ng-template>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="type">
     <th *matHeaderCellDef mat-sort-header="challengeType" mat-header-cell>Type</th>
     <td *matCellDef="let untypedSubject" mat-cell>
       <ng-template [ngIf]="typedSpecialChallenge(untypedSubject)" let-challenge="ngIf">
