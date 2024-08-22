@@ -1,4 +1,5 @@
-# [LCU Challenge Viewer] was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by Riot Games.  Riot Games does not endorse or sponsor this project.
+# [LCU Challenge Viewer]
+was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by Riot Games.  Riot Games does not endorse or sponsor this project.
 
 
 > Simple tool to see the advancement of LoL challenges.
