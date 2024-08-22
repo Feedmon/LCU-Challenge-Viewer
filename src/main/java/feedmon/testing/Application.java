@@ -9,6 +9,8 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.event.EventListener;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.lang.invoke.MethodHandles;
 
 
@@ -22,6 +24,14 @@ private String baseUrl;
 private String serverPort;
 
     public static void main(String[] args) {
+        // System.err unterdrücken todo remove after external library is removed
+        System.setErr(new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) {
+                // Nichts tun - keine Ausgabe
+            }
+        }));
+
         SpringApplication.run(Application.class, args);
     }
 

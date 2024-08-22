@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewChild} from "@angular/core";
-import {TestService} from "../services/test.service";
+import {Component, OnInit, ViewChild} from "@angular/core";
 import {SpecialChallengesDto} from "../../backend-api/api/models/special-challenges-dto";
 import {Champion} from "../../backend-api/api/models/champion";
 import {MatPaginator} from "@angular/material/paginator";
-import { MatTableDataSource } from "@angular/material/table";
+import {MatTableDataSource} from "@angular/material/table";
 import {FormControl} from "@angular/forms";
-import {ChallengeService} from "../services/challenge.service";
+import {ChallengeService, clientChampionSearchBehaviour} from "../services/challenge.service";
 
 interface ChampData {
     imageUrl: string;
@@ -29,6 +28,7 @@ export class ChampionsViewComponent implements OnInit {
 
   options: string[];
   selectedOptions= new FormControl<string[]>(['Perfectionist', 'Jack of All Champs', 'Champion Ocean', 'Adapt to All Situations']);
+  tableFilter = new FormControl<string>("");
 
   constructor(private challengeService: ChallengeService) {
   }
@@ -47,16 +47,24 @@ export class ChampionsViewComponent implements OnInit {
       this.dataSource.paginator = this.paginator;
       }
 
-    ngOnInit(): void {
-      this.challengeService.getChampions().then(res => this.champions = res);
+   ngOnInit(): void {
+     this.dataSource.filterPredicate = filterOverride
 
-      this.challengeService.getChallenges().then(res => {
-        this.challenges = res.filter(chal => chal.challengeType ==="Champion")
-      this.options = [];
-      this.challenges.forEach(chal => this.options.push(chal.challengeName));
-        this.updateColumns(this.selectedOptions.value ?? []);
-      })
+     this.tableFilter.valueChanges.subscribe(value =>{
+       if(value) {
+         this.dataSource.filter = value;
+       }else {
+         this.dataSource.filter = "";
+       }
+     })
+
+      this.challengeService.getChampions().then(res => this.champions = res);
+     this.updateTable();
+     this.challengeService.champSpecifivChallengesNotify$.subscribe(() => {
+        this.updateTable();
+     })
     }
+
 
   getCellColorClass(champId: number, challengeName: string):string {
     if(this.challenges.find(s=> s.challengeName === challengeName)!.completedIds.includes(champId)){
@@ -75,6 +83,19 @@ export class ChampionsViewComponent implements OnInit {
   }
 
   getDescriptionForChallengeName(challengeName: string): string{
-    return this.challenges!.find(chall => chall.challengeName === challengeName)!.challengeDescription;
+   return this.challenges!.find(chall => chall.challengeName === challengeName)!.challengeDescription;
   }
+
+  private updateTable(): void{
+    this.challengeService.getChampSpecificChallenges().then(res => {
+      this.challenges = res.filter(chal => chal.challengeType ==="Champion")
+      this.options = [];
+      this.challenges.forEach(chal => this.options.push(chal.challengeName));
+      this.updateColumns(this.selectedOptions.value ?? []);
+    })
+  }
+}
+
+function filterOverride(champ: ChampData, filter: string): boolean {
+  return clientChampionSearchBehaviour(champ.name, filter);
 }

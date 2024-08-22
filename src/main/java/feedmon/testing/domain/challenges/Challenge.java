@@ -2,34 +2,50 @@ package feedmon.testing.domain.challenges;
 
 import feedmon.testing.util.enums.Leagues;
 
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
 public class Challenge {
+    @NotNull
     private List<Integer> availableIds;
     private int capstoneGroupId;
     private String capstoneGroupName;
+    @NotNull
     private String category;
+    @NotNull
     private List<Integer> childrenIds;
+    @NotNull
     private List<Integer> completedIds;
+    @NotNull
     private Leagues currentLevel;
     private long currentLevelAchievedTime;
+    @NotNull
     private double currentThreshold;
+    @NotNull
     private double currentValue;
+    @NotNull
     private String description;
+    @NotNull
     private String descriptionShort;
     private List<FriendsAtLevel> friendsAtLevels;
+    @NotNull
     private List<String> gameModes;
+    @NotNull
     private boolean hasLeaderboard;
+    @NotNull
     private String iconPath;
+    @NotNull
     private int id;
+    @NotNull
     private String idListType;
     private Boolean isApex;
     private boolean isCapstone;
     private boolean isReverseDirection;
     // leagues without emerald with api url for icon
     private Map<Leagues, String> levelToIconPath;
+    @NotNull
     private String name;
     private String nextLevel;
     private String nextLevelIconPath;
@@ -43,10 +59,13 @@ public class Challenge {
     private String previousLevel;
     private double previousValue;
     private double priority;
+    @NotNull
     private Timestamp retireTimestamp;
     private String source;
+    @NotNull
     private Map<Leagues, Reward> thresholds;
     private String valueMapping;
+    @NotNull
     private boolean isRetired;
 
 

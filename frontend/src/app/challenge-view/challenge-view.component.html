@@ -1,9 +1,15 @@
-<div *ngIf="challenge">
-  completed amount: {{challenge.completedNames.length}}
+<div *ngIf="challenge && champions && skins">
+  Challenge Name: {{challenge.name}}
   <br/>
-  available amount: {{challenge.notCompletedNames.length}}
+  Challenge description: {{challenge.description}}
   <br/>
-<div *ngFor="let name of challenge.notCompletedNames ">
-  {{name}}
+  retired: {{challenge.retired}}
+  <br/>
+  completed amount: {{challenge.completedIds.length}}
+  <br/>
+  available amount: {{challenge.availableIds.length}}
+  <br/>
+<div *ngFor="let id of challenge.availableIds ">
+  {{getNameOrId(id)}}
 </div>
 </div>

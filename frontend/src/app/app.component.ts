@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {TestService} from "./services/test.service";
+import {ChallengeControllerService} from "./services/challenge-controller-service-wrapper.service";
 
 @Component({
   selector: 'app-root',
@@ -12,7 +12,7 @@ export class AppComponent {
   mes: string | undefined;
   times = 0;
 
-  constructor(private testService: TestService) {
+  constructor(private testService: ChallengeControllerService) {
   }
 
   changeText(): void {

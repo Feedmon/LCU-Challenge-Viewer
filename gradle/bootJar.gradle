@@ -1,15 +1,31 @@
-jar {
-    enabled = true
+/*jar {
+    dependsOn 'buildFrontend'
+    into('BOOT-INF/classes/webapp'){
+        from configurations.webApp
+    }
 }
 
 bootJar {
     dependsOn 'buildFrontend'
-
-    bootJar {
-        into('BOOT-INF/classes/static'){
-            from configurations.webApp
-        }
+    into('BOOT-INF/classes/webapp'){
+        from configurations.webApp
     }
+
+}*/
+
+jar {
+    dependsOn 'buildFrontend'
+    into('BOOT-INF/classes/static'){
+        from configurations.webApp
+    }
+}
+
+bootJar {
+    dependsOn 'buildFrontend'
+    into('BOOT-INF/classes/static'){
+        from configurations.webApp
+    }
+
 }
 
 bootRun {

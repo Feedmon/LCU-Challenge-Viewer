@@ -4,10 +4,11 @@ import {BaumigComponent} from "./baumig/baumig.component";
 import {ChampionsViewComponent} from "./champions-view/champions-view.component"
 import {ChallengeViewComponent} from "./challenge-view/challenge-view.component";
 import {RouteParameters} from "./route-parameters";
+import {ChampionChallengeViewComponent} from "./champion-challenge-view/champion-challenge-view.component";
 
 const routes: Routes = [
   {path: 'home', component: BaumigComponent},
-  {path: 'challenges', component: BaumigComponent},
+  {path: 'challenges', component: ChampionChallengeViewComponent},
   {path: 'champions', component: ChampionsViewComponent},
   {path:`challenge-details/:${RouteParameters.challengeName}`,component:ChallengeViewComponent},
   {path:`skin-challenge-details/:${RouteParameters.challengeName}`,component:ChallengeViewComponent},

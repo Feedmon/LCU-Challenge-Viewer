@@ -16,6 +16,7 @@ plugins {
     id "com.github.node-gradle.node" version "7.0.2"
     id "org.springdoc.openapi-gradle-plugin" version "1.3.2"
     id "com.github.johnrengelman.processes" version "0.5.0"
+//    id 'com.coditory.webjar' version '1.3.1'
 }
 
 apply plugin: 'java'
@@ -35,14 +36,20 @@ jar {
     }
 }
 
-publishing {
+/*webjar {
+    webjarDir = "META-INF/resources/webjars/${project.name}/${project.version}"
+}*/
+// for some reason it puts dist into static with the webjar plugin to make it working it need to be outside of the dist
+
+/*publishing {
     publications {
         main(MavenPublication){
             from components.java
+         //   from components.frontend
             artifact jar
         }
     }
-}
+}*/
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17

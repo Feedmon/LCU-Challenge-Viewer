@@ -152,6 +152,25 @@
       },
       "Challenge": {
         "type": "object",
+        "required": [
+          "availableIds",
+          "category",
+          "childrenIds",
+          "completedIds",
+          "currentLevel",
+          "currentThreshold",
+          "currentValue",
+          "description",
+          "descriptionShort",
+          "gameModes",
+          "hasLeaderboard",
+          "iconPath",
+          "id",
+          "idListType",
+          "name",
+          "retireTimestamp",
+          "thresholds"
+        ],
         "properties": {
           "previousLevel": {
             "type": "string"
@@ -355,6 +374,66 @@
           }
         }
       },
+      "Champion": {
+        "type": "object",
+        "required": [
+          "id",
+          "laneAssignments",
+          "name",
+          "roles",
+          "squarePortraitJpg",
+          "squarePortraitPath"
+        ],
+        "properties": {
+          "skins": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LolChampionsCollectionsChampionSkin"
+            }
+          },
+          "baseLoadScreenPath": {
+            "type": "string"
+          },
+          "baseSplashPath": {
+            "type": "string"
+          },
+          "purchased": {
+            "type": "integer"
+          },
+          "squarePortraitJpg": {
+            "type": "array",
+            "items": {
+              "format": "byte",
+              "type": "string"
+            }
+          },
+          "laneAssignments": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "name": {
+            "type": "string"
+          },
+          "alias": {
+            "type": "string"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "squarePortraitPath": {
+            "type": "string"
+          }
+        }
+      },
       "SpecialChallengesDto": {
         "type": "object",
         "required": [
@@ -441,52 +520,6 @@
           }
         }
       },
-      "Champion": {
-        "type": "object",
-        "properties": {
-          "skins": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LolChampionsCollectionsChampionSkin"
-            }
-          },
-          "baseLoadScreenPath": {
-            "type": "string"
-          },
-          "baseSplashPath": {
-            "type": "string"
-          },
-          "purchased": {
-            "type": "integer"
-          },
-          "squarePortraitJpg": {
-            "type": "array",
-            "items": {
-              "format": "byte",
-              "type": "string"
-            }
-          },
-          "roles": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "name": {
-            "type": "string"
-          },
-          "alias": {
-            "type": "string"
-          },
-          "id": {
-            "format": "int32",
-            "type": "integer"
-          },
-          "squarePortraitPath": {
-            "type": "string"
-          }
-        }
-      },
       "Reward": {
         "type": "object",
         "properties": {
@@ -522,76 +555,80 @@
   ],
   "openapi": "3.0.1",
   "paths": {
-    "/api/testing/challenge-data-as-string": {
+    "/api/lcu-challenges/challenge": {
       "get": {
-        "operationId": "getChallengeDataAsString",
+        "operationId": "getChallengeInfo",
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Challenge"
-                  }
+                  "$ref": "#/components/schemas/Challenge"
                 }
               }
             }
           }
         },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "challengeName",
+            "required": true
+          }
+        ],
         "tags": [
-          "test-controller"
+          "lcu-controller"
         ]
       }
     },
-    "/api/testing/reload-challenge-data": {
-      "get": {
-        "operationId": "reloadChallengeData",
+    "/api/lcu-challenges/start-connection": {
+      "put": {
+        "operationId": "startConnection",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "lcu-controller"
+        ]
+      }
+    },
+    "/api/lcu-challenges/execute-request": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "operationId": "executeApiRequest",
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Challenge"
-                  }
+                  "type": "string"
                 }
               }
             }
           }
         },
         "tags": [
-          "test-controller"
+          "lcu-controller"
         ]
       }
     },
-    "/api/testing/id-specific-challenges": {
-      "get": {
-        "operationId": "idSpecificChallenges",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SpecialChallengesDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "test-controller"
-        ]
-      }
-    },
-    "/api/testing/connection-status": {
+    "/api/lcu-challenges/connection-status": {
       "get": {
         "operationId": "getLCUConnectionStatus",
         "responses": {
@@ -607,37 +644,57 @@
           }
         },
         "tags": [
-          "test-controller"
+          "lcu-controller"
         ]
       }
     },
-    "/api/testing/start-connection": {
-      "put": {
-        "operationId": "startConnection",
+    "/api/lcu-challenges/skins": {
+      "get": {
+        "operationId": "getAllSkins",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LolChampionsCollectionsChampionSkin"
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
-          "test-controller"
+          "lcu-controller"
         ]
       }
     },
-    "/api/testing/stop-connection": {
-      "put": {
-        "operationId": "stopConnection",
+    "/api/lcu-challenges/progressable-champion-challenges": {
+      "get": {
+        "operationId": "getProgressableChampionChallenges",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Challenge"
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
-          "test-controller"
+          "lcu-controller"
         ]
       }
     },
-    "/api/testing/skin": {
+    "/api/lcu-challenges/skin": {
       "get": {
         "operationId": "getSkinForId",
         "responses": {
@@ -664,11 +721,47 @@
           }
         ],
         "tags": [
-          "test-controller"
+          "lcu-controller"
         ]
       }
     },
-    "/api/testing/champion": {
+    "/api/lcu-challenges/reload-challenge-data": {
+      "get": {
+        "operationId": "reloadChallengeData",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Challenge"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "lcu-controller"
+        ]
+      }
+    },
+    "/api/lcu-challenges/stop-connection": {
+      "put": {
+        "operationId": "stopConnection",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "lcu-controller"
+        ]
+      }
+    },
+    "/api/lcu-challenges/champion": {
       "get": {
         "operationId": "getChampionForId",
         "responses": {
@@ -695,11 +788,34 @@
           }
         ],
         "tags": [
-          "test-controller"
+          "lcu-controller"
         ]
       }
     },
-    "/api/testing/champions": {
+    "/api/lcu-challenges/all-challenges": {
+      "get": {
+        "operationId": "getChallenges",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Challenge"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "lcu-controller"
+        ]
+      }
+    },
+    "/api/lcu-challenges/champions": {
       "get": {
         "operationId": "getAllChampions",
         "responses": {
@@ -718,67 +834,30 @@
           }
         },
         "tags": [
-          "test-controller"
+          "lcu-controller"
         ]
       }
     },
-    "/api/testing/challenge": {
+    "/api/lcu-challenges/champ-specific-challenges": {
       "get": {
-        "operationId": "getChallengeInfo",
+        "operationId": "champSpecificChallenges",
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SpecialChallengesDto"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "in": "query",
-            "name": "challengeName",
-            "required": true
-          }
-        ],
-        "tags": [
-          "test-controller"
-        ]
-      }
-    },
-    "/api/testing/execute-request": {
-      "post": {
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "string"
-              }
-            }
-          },
-          "required": true
-        },
-        "operationId": "executeApiRequest",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SpecialChallengesDto"
+                  }
                 }
               }
             }
           }
         },
         "tags": [
-          "test-controller"
+          "lcu-controller"
         ]
       }
     }

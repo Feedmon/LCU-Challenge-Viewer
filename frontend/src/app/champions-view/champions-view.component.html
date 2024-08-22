@@ -1,22 +1,25 @@
-<mat-form-field appearance="fill">
-  <mat-label>Choose which Challenges are visualized</mat-label>
-  <mat-select [formControl]="selectedOptions" (openedChange)="selectOpenedOrClosed($event)" multiple>
-    <mat-option *ngFor="let option of options" [value]="option" [matTooltip]="getDescriptionForChallengeName(option)">
-        {{ option }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
-
-<br/>
-
 <div class="table-container" *ngIf="champions && challenges">
+
+  <mat-form-field appearance="fill">
+    <mat-label>Choose which Challenges are visualized</mat-label>
+    <mat-select [formControl]="selectedOptions" (openedChange)="selectOpenedOrClosed($event)" multiple>
+      <mat-option *ngFor="let option of options" [value]="option" [matTooltip]="getDescriptionForChallengeName(option)">
+        {{ option }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field >
+    <mat-label>Filter Table</mat-label>
+    <input [formControl]="tableFilter" matInput placeholder="Champion Name" >
+  </mat-form-field>
 
     <mat-table [dataSource]="dataSource">
         <ng-container matColumnDef="champion">
           <mat-header-cell *matHeaderCellDef> Champion </mat-header-cell>
           <mat-cell *matCellDef="let element">
               <img [matTooltip]="element.name" [src]="'data:image/jpeg;base64,' + element.image" alt="Image" style="width: 45px; height: 45px;">
-            {{element.name}}
+            <div class="hiddenText"><span>{{element.name}}</span></div>
           </mat-cell>
         </ng-container>
 

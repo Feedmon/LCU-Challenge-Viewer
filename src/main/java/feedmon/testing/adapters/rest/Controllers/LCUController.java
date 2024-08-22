@@ -12,15 +12,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/testing")
-public class TestController {
+@RequestMapping("/api/lcu-challenges")
+public class LCUController {
 
     private final GetLCUConnectionStatusUseCase getLCUConnectionStatusUseCase;
     private final LCUService lcuService;
 
     @Autowired
-    public TestController(GetLCUConnectionStatusUseCase getLCUConnectionStatusUseCase,
-                          LCUService lcuService) {
+    public LCUController(GetLCUConnectionStatusUseCase getLCUConnectionStatusUseCase,
+                         LCUService lcuService) {
         this.getLCUConnectionStatusUseCase = getLCUConnectionStatusUseCase;
         this.lcuService = lcuService;
     }
@@ -45,9 +45,9 @@ public class TestController {
         return lcuService.executeRequest(path);
     }
 
-    @GetMapping(value = "challenge-data-as-string")
-    public List<Challenge> getChallengeDataAsString() {
-        return lcuService.getChallenges(true);
+    @GetMapping(value = "all-challenges")
+    public List<Challenge> getChallenges() {
+        return lcuService.getChallenges(false);
     }
 
     @GetMapping(value = "reload-challenge-data")
@@ -55,13 +55,13 @@ public class TestController {
         return lcuService.getChallenges(true);
     }
 
-    @GetMapping(value = "id-specific-challenges")
-    public List<SpecialChallengesDto> idSpecificChallenges() {
-        return lcuService.getChallengesCompletionInfo();
+    @GetMapping(value = "champ-specific-challenges")
+    public List<SpecialChallengesDto> champSpecificChallenges() {
+        return lcuService.getChampSpecificChallenges();
     }
 
     @GetMapping(value = "challenge")
-    public SpecialChallengesDto getChallengeInfo(@RequestParam String challengeName){
+    public Challenge getChallengeInfo(@RequestParam String challengeName){
         return lcuService.getChallengeForName(challengeName);
     }
 
@@ -75,8 +75,18 @@ public class TestController {
         return lcuService.getChampionForId(championId);
     }
 
+    @GetMapping(value = "progressable-champion-challenges")
+    public List<Challenge> getProgressableChampionChallenges(){
+        return lcuService.getProgressableChampionSpecificChallenges();
+    }
+
     @GetMapping(value = "champions")
     public List<Champion> getAllChampions(){
         return lcuService.getAllChampions();
+    }
+
+    @GetMapping(value = "skins")
+    public List<LolChampionsCollectionsChampionSkin> getAllSkins(){
+        return lcuService.getAllSkins();
     }
 }

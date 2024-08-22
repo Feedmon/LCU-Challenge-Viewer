@@ -1,0 +1,165 @@
+body {
+  font-family: 'Arial Black', sans-serif;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding-top: 175px; /* 100px für den fixierten Balken + 75px für die obere Leiste */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  user-select: none;
+}
+
+.selection-bar {
+  position: fixed;
+  top: 95px; /* 75px für die obere Leiste + 20px Abstand */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fafafa;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  max-width: 1200px;
+  user-select: none;
+}
+
+.dropdown {
+  width: 200px;
+}
+
+.middle-text {
+  font-size: 18px;
+  flex: 1;
+  text-align: center;
+}
+
+.rank-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Zentriert die Elemente horizontal */
+  justify-content: center; /* Zentriert die Elemente vertikal */
+  text-align: center;
+}
+
+.unranked {
+  color: rgb(46, 46, 46);
+}
+
+.iron {
+  color: rgb(203, 203, 203);
+}
+
+.bronze {
+  color: rgb(255, 190, 125);
+}
+
+.silver {
+  color: rgb(203, 203, 203);
+}
+
+.gold {
+  color: gold;
+}
+
+.platinum {
+  color: rgb(0, 230, 176);
+}
+
+.diamond {
+  color: #576ace;
+}
+
+.master {
+  color: rgb(211, 125, 253);
+}
+
+.grandmaster {
+  color: #e17283;
+}
+
+.challenger {
+  color: #308599;
+}
+
+.value-to-next-level,
+.item-rank {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.item-rank {
+  margin-bottom: 5px;
+}
+
+.container {
+  position: fixed;
+  width: 80%;
+  max-width: 1200px;
+  background-color: #fafafa;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 170px;
+  left: 50%;
+  transform: translateX(-50%);
+  user-select: none;
+  overflow: visible;
+}
+
+.image-container-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.search-field {
+  flex: 1;
+  max-width: 200px;
+}
+
+.icon-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.visibility-button {
+  margin-left: auto;
+}
+
+img.completed {
+  filter: grayscale(100%);
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  max-height: calc(100vh - 450px);
+  gap: 10px;
+  overflow-y: auto;
+}
+
+.image-item {
+  text-align: center;
+}
+
+.image-item img {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.image-label {
+  margin-top: 5px;
+  font-size: 14px;
+  color: #555;
+}
+
+.active-role {
+  background-color: #0a0218eb;
+}

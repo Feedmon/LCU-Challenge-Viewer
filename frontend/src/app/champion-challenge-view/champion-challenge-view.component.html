@@ -1,0 +1,52 @@
+<div class="selection-bar">
+  <ng-container *ngIf="challenges">
+  <mat-form-field appearance="fill" class="dropdown">
+    <mat-label>Challenges</mat-label>
+    <mat-select [formControl]="selectedChallenge" >
+      <mat-option  *ngFor="let challenge of challenges" [value]="challenge">
+        {{ challenge.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <span class="middle-text">{{ selectedChallenge.value?.description }}</span>
+  <div class="rank-container">
+    <span class="item-rank" [ngClass]="selectedChallenge.value!.currentLevel.toLowerCase()">{{selectedChallenge.value?.currentLevel}}</span>
+    <span *ngIf="selectedChallenge.value?.nextThreshold" class="value-to-next-level">
+      {{selectedChallenge.value?.currentValue}} / {{selectedChallenge.value?.nextThreshold}}
+    </span>
+  </div>
+ </ng-container>
+</div>
+
+<div class="container">
+  <ng-container *ngIf="challenges && champions">
+  <div class="image-container-header">
+    <mat-form-field appearance="fill" class="search-field">
+      <mat-label>Search</mat-label>
+      <input [formControl]="championSearch" matInput>
+    </mat-form-field>
+    <div  class="icon-buttons">
+      <button (click)="roleSelect('top')" mat-button [ngClass]="{'active-role': filterForRole === 'top'}"><img src="assets/icons/top.svg" alt="Top" /></button>
+      <button (click)="roleSelect('jungle')" mat-button [ngClass]="{'active-role': filterForRole === 'jungle'}"><img src="assets/icons/jgl.svg" alt="Jgl" /></button>
+      <button (click)="roleSelect('middle')" mat-button [ngClass]="{'active-role': filterForRole === 'middle'}"><img src="assets/icons/mid.svg" alt="Mid" /></button>
+      <button (click)="roleSelect('bottom')" mat-button [ngClass]="{'active-role': filterForRole === 'bottom'}"><img src="assets/icons/bot.svg" alt="Bot" /></button>
+      <button (click)="roleSelect('support')" mat-button [ngClass]="{'active-role': filterForRole === 'support'}"><img src="assets/icons/sup.svg" alt="Sup" /></button>
+    </div>
+    <button *ngIf="hideCompletedChampions" matTooltip="show completed Champions"
+            color="primary" mat-icon-button (click)="visibilityChanged()" class="visibility-button">
+      <mat-icon fontIcon="fa-eye"></mat-icon></button>
+
+    <button *ngIf="!hideCompletedChampions" matTooltip="hide completed Champions"  color="primary" mat-icon-button (click)="visibilityChanged()"  class="visibility-button">
+      <mat-icon fontIcon="fa-eye-slash"></mat-icon></button>
+  </div>
+
+  <div class="image-grid">
+    <ng-container *ngFor="let champ of championsChallengeData">
+    <div class="image-item" *ngIf="champ.availableForChallenge && !champ.excludedByFilter && (!champ.completed || champ.completed && !hideCompletedChampions)">
+        <img [class.completed]="champ.completed"  [src]="'data:image/jpeg;base64,' + champ.squarePortraitJpg" alt="{{ champ.name }}">
+        <span class="image-label">{{ champ.name }}</span>
+    </div>
+    </ng-container>
+  </div>
+  </ng-container>
+</div>

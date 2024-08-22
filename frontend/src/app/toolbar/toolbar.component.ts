@@ -1,7 +1,6 @@
 import {Component, OnInit} from "@angular/core";
-import { Router } from '@angular/router';
 import {ChallengeService} from "../services/challenge.service";
-import {TestService} from "../services/test.service";
+import {ChallengeControllerService} from "../services/challenge-controller-service-wrapper.service";
 
 @Component({
   selector: 'app-toolbar',
@@ -11,9 +10,10 @@ import {TestService} from "../services/test.service";
 export class ToolbarComponent implements OnInit {
 
   connected = false;
+  loading = false;
 
   constructor(private challengeService: ChallengeService,
-              private testService: TestService) {
+              private testService: ChallengeControllerService) {
   }
 
   ngOnInit(): void {
@@ -23,9 +23,8 @@ export class ToolbarComponent implements OnInit {
   }
 
   reloadChallenges(): void {
-    this.challengeService.reloadChallenges();
-
-    //window.location.reload()
+    this.loading = true;
+    this.challengeService.reloadChallenges().then(()=> this.loading = false);
   }
 
   startConnection(): void {

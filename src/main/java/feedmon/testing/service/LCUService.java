@@ -9,18 +9,22 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.stirante.lolclient.ClientApi;
 import feedmon.testing.domain.challenges.Challenge;
 import feedmon.testing.domain.inventory.Champion;
-import feedmon.testing.usecases.dtos.ChampionDto;
+import feedmon.testing.domain.inventory.ChampionWithLanes;
 import feedmon.testing.usecases.dtos.SpecialChallengesDto;
-import generated.LolChampionsCollectionsChampion;
 import generated.LolChampionsCollectionsChampionSkin;
 import generated.LolSummonerSummoner;
 import generated.UriMap;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.sql.Timestamp;
 import java.util.*;
 
+import static feedmon.testing.util.enums.ChallengeAvailableIdType.CHAMPION;
 import static feedmon.testing.util.enums.ChallengeAvailableIdType.ITEM;
 
 
@@ -28,19 +32,22 @@ import static feedmon.testing.util.enums.ChallengeAvailableIdType.ITEM;
 @Service
 public class LCUService {
 
+    private final HttpClient httpClient;
+    private final ObjectMapper objectMapper;
     private ClientApi clientApi;
     private  LolSummonerSummoner loggedInSummoner;
 
     private List<Challenge> challenges;
     private List<Champion> champions;
     private List<LolChampionsCollectionsChampionSkin> skins;
-    private List<SpecialChallengesDto> storedChallengeCompletionInfo;
 
     public LCUService() {
         try {
             startConnection();
         }catch(Exception ignored){
         }
+        httpClient = HttpClient.newHttpClient();
+        objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     public void startConnection() {
@@ -68,13 +75,12 @@ public class LCUService {
         clientApi.stop();
     }
 
-    public List<ChampionDto> getChampionsForCurrentSummoner() {
-        //  Arrays.stream(getChampions()).map(champion -> new ChampionDto())
-        return List.of();
+    public Challenge getChallengeForName(String challengeName) {
+        return challenges.stream().filter(challenge -> challenge.getName().equals(challengeName)).findFirst().orElseThrow();
     }
 
-    public SpecialChallengesDto getChallengeForName(String challengeName) {
-        return new SpecialChallengesDto(challenges.stream().filter(challenge -> challenge.getName().equals(challengeName)).findFirst().orElseThrow(), getAllSkins(), getChampions());
+    public List<Challenge> getProgressableChampionSpecificChallenges() {
+        return challenges.stream().filter(challenge -> !challenge.getCompletedIds().isEmpty()).filter(challenge -> challenge.getIdListType().equals(CHAMPION.name())).toList();
     }
 
     public LolChampionsCollectionsChampionSkin getSkinForId(Integer id) {
@@ -82,33 +88,21 @@ public class LCUService {
     }
 
     public Champion getChampionForId(Integer id) {
-        return champions.stream().filter(champion -> champion.id.equals(id)).findFirst().orElseThrow();
+        return getChampions().stream().filter(champion -> champion.id.equals(id)).findFirst().orElseThrow();
     }
 
     public List<Champion> getAllChampions() {
-        return champions;
+        return getChampions();
     }
 
-    public List<SpecialChallengesDto> getChallengesCompletionInfo() {
-/*        if (storedChallengeCompletionInfo != null) {
-            return storedChallengeCompletionInfo;
-        }*/
-
+    public List<SpecialChallengesDto> getChampSpecificChallenges() {
         List<Champion> champions = getChampions();
         List<LolChampionsCollectionsChampionSkin> skins = getAllSkins();
 
-        // todo another call for all challs
         List<Challenge> challenges = getChallenges(false).stream().filter(challenge -> !challenge.getCompletedIds().isEmpty()).filter(challenge -> !challenge.getIdListType().equals(ITEM.name())).toList();
 
-        storedChallengeCompletionInfo = challenges.stream().map(chall -> new SpecialChallengesDto(chall, skins, champions)).toList();
-        return storedChallengeCompletionInfo;
+        return challenges.stream().map(chall -> new SpecialChallengesDto(chall, skins, champions)).toList();
     }
-
-    private ChampionDto championCollectionToChampionDto(LolChampionsCollectionsChampion champion) {
-        //  /lol-champions/v1/inventories/{summonerId}/champions/{championId}/skins
-        return null;
-    }
-
 
     private List<Champion> getChampions() {
         if (champions != null) {
@@ -117,21 +111,28 @@ public class LCUService {
 
         String champsJson = executeRequest("/lol-champions/v1/inventories/" + loggedInSummoner.summonerId + "/champions");
 
-        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+       // ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         CollectionType type = TypeFactory.defaultInstance().constructCollectionType(List.class, Champion.class);
         try {
             List<Champion> championsMapped = objectMapper.readValue(champsJson, type);
             championsMapped.sort(Comparator.comparing(champion -> champion.name));
             champions = championsMapped.stream().filter(champion -> champion.id >= 0).toList();
 
+            List< ChampionWithLanes> champLaneAssignments = getChampionsWithLaneAssignments().values().stream().toList();
+
             champions.forEach(champ -> {
-                champ.squarePortraitJpg =   executeByteRequest(champ.squarePortraitPath);
+                champ.squarePortraitJpg = executeByteRequest(champ.squarePortraitPath);
+                champ.laneAssignments = champLaneAssignments.stream().filter(champion -> Objects.equals(champ.id, champion.id)).findFirst().orElseThrow().positions;
             });
 
             return champions;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private Map<String, ChampionWithLanes> getChampionsWithLaneAssignments(){
+       return sendRequestForMap(buildGetRequestForUrl("https://cdn.merakianalytics.com/riot/lol/resources/latest/en-US/champions.json"), ChampionWithLanes.class);
     }
 
 
@@ -162,7 +163,7 @@ public class LCUService {
         return this.loggedInSummoner!= null && clientApi.isConnected();
     }
 
-    private List<LolChampionsCollectionsChampionSkin> getAllSkins() {
+    public List<LolChampionsCollectionsChampionSkin> getAllSkins() {
         if (skins != null) {
             return skins;
         }
@@ -200,15 +201,25 @@ public class LCUService {
         return challenges;
     }
 
+    private HttpRequest buildGetRequestForUrl(String url) {
+        return executeWithExceptionWrapper(() ->  HttpRequest.newBuilder() .GET().uri(new URI(url)).build());
+    }
+
+    private <T> Map<String, T> sendRequestForMap(HttpRequest httpRequest, Class<T> clazz){
+        String s =  executeWithExceptionWrapper(() -> httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body());
+        return executeWithExceptionWrapper(()-> objectMapper.readValue(s, objectMapper.getTypeFactory().constructMapType(Map.class,String.class, clazz)));
+    }
+
+
     @FunctionalInterface
-    public interface ThrowingSupplier<T, E extends IOException> {
+    public interface ThrowingSupplier<T, E extends Exception > {
         T call() throws E;
     }
 
-    private <T> T executeWithExceptionWrapper(ThrowingSupplier<T, IOException> supplier) {
+    private <T> T executeWithExceptionWrapper(ThrowingSupplier<T, Exception> supplier) {
         try {
             return supplier.call();
-        } catch (IOException e) {
+        } catch (Exception  e) {
             throw new RuntimeException(e);
         }
     }
