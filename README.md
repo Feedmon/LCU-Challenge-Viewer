@@ -2,8 +2,9 @@
 
 > Simple tool to see the advancement of LoL challenges.
 
-![screenshot](screenshot.png)
+![challenge-view.PNG](challenge-view.PNG)
 
+![champion-view.PNG](champion-view.PNG)
 # How to use
 
 > Open .exe and league client
