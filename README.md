@@ -7,6 +7,8 @@ was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by
 ![challenge-view.PNG](challenge-view.PNG)
 
 ![champion-view.PNG](champion-view.PNG)
+
+![eternals-view.PNG](eternals-view.PNG)
 # How to use
 
 > Open .exe and league client

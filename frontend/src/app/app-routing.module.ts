@@ -17,7 +17,7 @@ const routes: Routes = [
   {path:`challenge-details/:${RouteParameters.challengeName}`,component:ChallengeViewComponent},
   {path:`skin-challenge-details/:${RouteParameters.challengeName}`,component:ChallengeViewComponent},
   {path:`champ-challenge-details/:${RouteParameters.challengeName}`,component:ChallengeViewComponent},
-  {path: "**", redirectTo: "home"}
+  {path: "**", redirectTo: "challengeAutoCheckList"}
 ];
 
 @NgModule({
