@@ -1,4 +1,4 @@
-package feedmon.testing.domain.inventory;
+package feedmon.testing.domain.inventory.champion;
 
 import generated.LolChampionsCollectionsChampionSkin;
 

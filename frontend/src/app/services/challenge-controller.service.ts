@@ -6,6 +6,7 @@ import {
 import {Champion} from "../../backend-api/api/models/champion";
 import {Challenge} from '../../backend-api/api/models/challenge';
 import {LcuControllerService} from "../../backend-api/api/services/lcu-controller.service";
+import {ChampionIdWithStatstones} from "../../backend-api/api/models/champion-id-with-statstones";
 
 @Injectable()
 export class ChallengeControllerService {
@@ -52,5 +53,9 @@ export class ChallengeControllerService {
 
   getAllChampions(): Promise<Champion[]> {
     return this.lcuControllerService.getAllChampions().toPromise();
+  }
+
+  getEternals(): Promise<ChampionIdWithStatstones[]> {
+    return this.lcuControllerService.getStatstones().toPromise();
   }
 }

@@ -1,0 +1,72 @@
+ <mat-table [dataSource]="dataSource" matSort>
+
+  <ng-container matColumnDef="champion">
+    <mat-header-cell *matHeaderCellDef> Champion </mat-header-cell>
+    <mat-cell *matCellDef="let element" class="image-cell">
+      <ng-template [ngIf]="typedChampionWithEternals(element)" let-champion="ngIf">
+        <img [matTooltip]="champion.name" [src]="'data:image/jpeg;base64,' + champion.squarePortraitJpg" alt="Image" style="height: 75px;">
+        <div class="hiddenText"><span>{{champion.name}}</span></div>
+      </ng-template>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="seriesName">
+    <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+    <mat-cell *matCellDef="let element" class="text-cell" >
+      <ng-template [ngIf]="typedChampionWithEternals(element)" let-champion="ngIf">
+        <div *ngFor="let series of champion.seriesStatstones; let i = index" class="series-item" [matTooltip]="series.description" matTooltipPosition="left">
+          {{ series.name }}
+          <div *ngIf="i < 2" class="separator"></div>
+        </div>
+      </ng-template>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="milestone5">
+    <mat-header-cell *matHeaderCellDef mat-sort-header="seriesMileStone5CompletionPercentage"> Milestone 5 </mat-header-cell>
+    <mat-cell *matCellDef="let element" class="text-cell" >
+      <ng-template [ngIf]="typedChampionWithEternals(element)" let-champion="ngIf">
+        <div *ngFor="let series of champion.seriesStatstones; let i = index" class="series-item">
+          {{series.milestone5CompletionPercentage == 100 ? series.milestone5Value : series.currentValue}} / {{ series.milestone5Value }}
+          <div *ngIf="i < 2" class="separator"></div>
+        </div>
+      </ng-template>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="milestone15">
+    <mat-header-cell *matHeaderCellDef mat-sort-header="seriesMileStone15CompletionPercentage"> Milestone 15 </mat-header-cell>
+    <mat-cell *matCellDef="let element" class="text-cell" >
+      <ng-template [ngIf]="typedChampionWithEternals(element)" let-champion="ngIf">
+        <div *ngFor="let series of champion.seriesStatstones; let i = index" class="series-item">
+          {{series.milestone15CompletionPercentage == 100 ? series.milestone15Value : series.currentValue}} / {{ series.milestone15Value }}
+          <div *ngIf="i < 2" class="separator"></div>
+        </div>
+      </ng-template>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="currentMilestone">
+    <mat-header-cell *matHeaderCellDef mat-sort-header="highestMilestoneWithPercentageToNext"> Current Milestone | Progress </mat-header-cell>
+    <mat-cell *matCellDef="let element" class="text-cell" >
+      <ng-template [ngIf]="typedChampionWithEternals(element)" let-champion="ngIf">
+        <div *ngFor="let series of champion.seriesStatstones; let i = index" class="series-item" [matTooltip]="getToolTipForMileStoneProgress(series)" matTooltipPosition="left">
+          {{series.currentMilestone}} | {{series.currentMilestoneCompletionPercentage}}%
+          <div *ngIf="i < 2" class="separator"></div>
+        </div>
+      </ng-template>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="championRoles">
+    <mat-header-cell *matHeaderCellDef> Champion Roles </mat-header-cell>
+    <mat-cell *matCellDef="let element" >
+      <ng-template [ngIf]="typedChampionWithEternals(element)" let-champion="ngIf">
+        {{champion.roles.join(", ")  }}
+      </ng-template>
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>

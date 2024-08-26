@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {ChallengeControllerService} from "../services/challenge-controller-service-wrapper.service";
+import {ChallengeControllerService} from "../services/challenge-controller.service";
 import {Challenge} from "../../backend-api/api/models/challenge";
 import {ChallengeService, clientChampionSearchBehaviour} from "../services/challenge.service";
 import {Champion} from "../../backend-api/api/models/champion";
@@ -14,13 +14,13 @@ interface ChampChallengeData extends Champion {
 
 @Component({
   selector: 'app-challenge-view-new',
-  templateUrl: 'champion-challenge-view.component.html',
-  styleUrls: ['./champion-challenge-view.component.scss']
+  templateUrl: 'challenge-auto-checklist.component.html',
+  styleUrls: ['./challenge-auto-checklist.component.scss']
 })
-export class ChampionChallengeViewComponent implements OnInit{
+export class ChallengeAutoChecklistComponent implements OnInit{
 
   challenges: Challenge[];
-  champions: Champion[] = [];
+  champions: Champion[];
 
   championsChallengeData: ChampChallengeData[];
 
@@ -29,8 +29,6 @@ export class ChampionChallengeViewComponent implements OnInit{
   hideCompletedChampions = true;
 
   selectedChallenge: FormControl<Challenge | null> = new FormControl<Challenge | null>(null);
-
-  private availableChampionsForChallenge: ChampChallengeData[];
 
   constructor(private challengeControllerService: ChallengeControllerService,
               private challengeService: ChallengeService) {
@@ -73,33 +71,6 @@ export class ChampionChallengeViewComponent implements OnInit{
           champ.completed = challenge.completedIds.includes(champ.id);
           champ.excludedByFilter = this.champShouldBeExcludedByFilter(champ);
         })
-
-/*        const availableChamps: ChampChallengeData[] = [];
-        let availableIds: number[] = challenge.availableIds;
-
-        if(availableIds.length === 0 && !(challenge.currentLevel === Leagues.Master || challenge.currentLevel === Leagues.Grandmaster ||challenge.currentLevel === Leagues.Challenger)){
-         availableIds = this.champions.map(champ => champ.id).filter(id => !challenge.completedIds.includes(id));
-        }
-
-        availableIds.forEach(champId => {
-          const champion = this.champions.find(champ => champ.id === champId);
-          if(champion){
-            availableChamps.push({image: champion.squarePortraitJpg, name: champion.name, id: champId, completed:false, lanes: champion.laneAssignments})
-          }else {
-            availableChamps.push({name: "not found", id: champId, completed: false, lanes: []})
-          }
-        })
-
-        challenge.completedIds.forEach(champId => {
-          const champion = this.champions.find(champ => champ.id === champId);
-          if(champion){
-            availableChamps.push({image: champion.squarePortraitJpg, name: champion.name, id: champId, completed:true, lanes: champion.laneAssignments})
-          }else {
-            availableChamps.push({name: "not found", id: champId, completed: true, lanes: []})
-          }
-        })*/
-
-       // this.availableChampionsForChallenge = availableChamps
         this.filterChamps();
       }
     })
@@ -121,7 +92,7 @@ export class ChampionChallengeViewComponent implements OnInit{
       .then(response=> {
         this.challenges = response;
         this.subscribeToChallengeChange();
-        this.selectedChallenge.patchValue(this.challenges[2]);
+        this.selectedChallenge.patchValue(this.challenges[38]);
       });
   }
 

@@ -2,14 +2,23 @@ package feedmon.testing.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.stirante.lolclient.ClientApi;
 import feedmon.testing.domain.challenges.Challenge;
-import feedmon.testing.domain.inventory.Champion;
-import feedmon.testing.domain.inventory.ChampionWithLanes;
+import feedmon.testing.domain.inventory.champion.Champion;
+import feedmon.testing.domain.inventory.champion.ChampionIdWithStatstones;
+import feedmon.testing.domain.inventory.champion.ChampionWithLanes;
+import feedmon.testing.domain.inventory.champion.statstones.SeriesStatstone;
+import feedmon.testing.domain.inventory.champion.statstones.SeriesStatstonesWithCompletionValues;
+import feedmon.testing.domain.inventory.champion.statstones.Statstone;
+import feedmon.testing.domain.inventory.champion.statstones.Statstones;
+import feedmon.testing.domain.inventory.champion.statstones.ddragon.DDragonStatstone;
+import feedmon.testing.domain.inventory.champion.statstones.ddragon.DDragonStatstonesMappings;
+import feedmon.testing.domain.inventory.champion.statstones.ddragon.StatstoneData;
 import feedmon.testing.usecases.dtos.SpecialChallengesDto;
 import generated.LolChampionsCollectionsChampionSkin;
 import generated.LolSummonerSummoner;
@@ -40,14 +49,16 @@ public class LCUService {
     private List<Challenge> challenges;
     private List<Champion> champions;
     private List<LolChampionsCollectionsChampionSkin> skins;
+    private List<ChampionIdWithStatstones> championIdWithStatstones;
 
     public LCUService() {
+        httpClient = HttpClient.newHttpClient();
+        objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         try {
             startConnection();
         }catch(Exception ignored){
         }
-        httpClient = HttpClient.newHttpClient();
-        objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
     }
 
     public void startConnection() {
@@ -69,6 +80,8 @@ public class LCUService {
         }
         loggedInSummoner = executeWithExceptionWrapper(() -> clientApi.getCurrentSummoner());
         getChallenges(true);
+        getChampions();
+        getStatstoneProgress();
     }
 
     public void stopConnection() {
@@ -132,7 +145,9 @@ public class LCUService {
     }
 
     private Map<String, ChampionWithLanes> getChampionsWithLaneAssignments(){
-       return sendRequestForMap(buildGetRequestForUrl("https://cdn.merakianalytics.com/riot/lol/resources/latest/en-US/champions.json"), ChampionWithLanes.class);
+        HttpRequest request = buildGetRequestForUrl("https://cdn.merakianalytics.com/riot/lol/resources/latest/en-US/champions.json");
+        JavaType javaType = objectMapper.getTypeFactory().constructMapType(Map.class,String.class, ChampionWithLanes.class);
+       return sendRequestForJavaType(request, javaType);
     }
 
 
@@ -173,8 +188,115 @@ public class LCUService {
         return skins;
     }
 
-    private void getSkinsForChampionId(Long id) {
+    private void getSkinsForChampionId(Integer id) {
         executeWithExceptionWrapper(() -> clientApi.executeGet("/lol-champions/v1/inventories/" + loggedInSummoner.summonerId + "/champions/" + id + "/skins", LolChampionsCollectionsChampionSkin[].class));
+    }
+
+    public synchronized List<ChampionIdWithStatstones> getStatstoneProgress() {
+        if(championIdWithStatstones != null){
+            return championIdWithStatstones;
+        }
+
+        HttpRequest request = buildGetRequestForUrl("https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/statstones.json");
+        JavaType javaType = objectMapper.getTypeFactory().constructType( DDragonStatstonesMappings.class);
+        DDragonStatstonesMappings statstonesMappings = sendRequestForJavaType(request, javaType);
+
+        Map<Integer, ChampionIdWithStatstones> championIdWithStatstonesMap = new HashMap<>();
+        this.getChampions().forEach(champ -> championIdWithStatstonesMap.put(champ.id, new ChampionIdWithStatstones(champ.id)));
+
+        for (StatstoneData statstoneData : statstonesMappings.statstoneData) {
+
+           Integer champId = statstoneData.statstones.get(0).boundChampion.itemId;
+           if(statstoneData.name.equalsIgnoreCase("starter series")){
+               championIdWithStatstonesMap.get(champId).starterSeriesStatstones = mapDDragonStatstonesToSeriesStatstones(statstoneData.statstones);
+           }else if(statstoneData.name.equalsIgnoreCase("series 1")){
+               championIdWithStatstonesMap.get(champId).series1Statstones = mapDDragonStatstonesToSeriesStatstones(statstoneData.statstones);
+           }else if(statstoneData.name.equalsIgnoreCase("series 2")){
+                championIdWithStatstonesMap.get(champId).series2Statstones = mapDDragonStatstonesToSeriesStatstones(statstoneData.statstones);
+           } else {
+               throw new RuntimeException("Unknown Eternal series");
+           }
+        }
+
+        championIdWithStatstones = championIdWithStatstonesMap.values().stream().map(this::enterAndCalculateStatstoneDataForChampionIdWithStatstones).toList();
+
+        return championIdWithStatstones;
+    }
+
+    private ChampionIdWithStatstones enterAndCalculateStatstoneDataForChampionIdWithStatstones(ChampionIdWithStatstones champWithStatstones) {
+        Statstones[] statstones = getStatStonesForChampionId(champWithStatstones.championId);
+        for (Statstones statstone : statstones) {
+            if(statstone.name.equalsIgnoreCase("starter series")){
+                for (SeriesStatstone starterSeriesStatstone : champWithStatstones.starterSeriesStatstones.seriesStatstones) {
+                    mapDataOntoStatstone(starterSeriesStatstone, statstone.statstones);
+                }
+            } else if(statstone.name.equalsIgnoreCase("series 1")){
+                for (SeriesStatstone series1Statstone : champWithStatstones.series1Statstones.seriesStatstones) {
+                    mapDataOntoStatstone(series1Statstone, statstone.statstones);
+                }
+            }else if(statstone.name.equalsIgnoreCase("series 2")){
+                for (SeriesStatstone series2Statstone : champWithStatstones.series2Statstones.seriesStatstones) {
+                    mapDataOntoStatstone(series2Statstone, statstone.statstones);
+                }
+            }else {
+                throw new RuntimeException("Unknown Eternal series");
+            }
+        }
+
+        champWithStatstones.starterSeriesStatstones.calculateMilestoneCompletionPercentage();
+        champWithStatstones.series1Statstones.calculateMilestoneCompletionPercentage();
+        champWithStatstones.series2Statstones.calculateMilestoneCompletionPercentage();
+        return champWithStatstones;
+    }
+
+    private void mapDataOntoStatstone(SeriesStatstone seriesStatstone, List<Statstone> statstones ) {
+        Statstone statstone = statstones.stream()
+                .filter(stone -> stone.statstoneId.equals(seriesStatstone.contentId))
+                .reduce((a, b) -> {
+                    throw new IllegalStateException("Found more than one element");
+                }).orElseThrow(() -> new RuntimeException("None or more than one element found"));
+
+        seriesStatstone.currentMilestone = statstone.playerRecord.milestoneLevel;
+        seriesStatstone.currentValue = statstone.playerRecord.value;
+        seriesStatstone.currentMilestoneCompletionPercentage = (int) (statstone.completionValue * 100);
+        seriesStatstone.milestone5CompletionPercentage = statstone.playerRecord.value >= seriesStatstone.milestone5Value ? 100 : percentageOfMileStone(statstone.playerRecord.value,seriesStatstone.milestone5Value);
+        seriesStatstone.milestone15CompletionPercentage = statstone.playerRecord.value >= seriesStatstone.milestone15Value ? 100 : percentageOfMileStone(statstone.playerRecord.value,seriesStatstone.milestone15Value);
+    }
+
+    private int percentageOfMileStone(Integer currentValue, Integer mileStoneValue){
+       return (int) (((double) currentValue / mileStoneValue) * 100);
+    }
+
+    private Statstones[] getStatStonesForChampionId(int id) {
+      return executeWithExceptionWrapper(() -> objectMapper.readValue(clientApi.executeBinaryGet("/lol-statstones/v2/player-statstones-self/"+ id), Statstones[].class));
+    }
+
+    private SeriesStatstonesWithCompletionValues mapDDragonStatstonesToSeriesStatstones(List<DDragonStatstone> dragonStatstones) {
+        List<SeriesStatstone> seriesStatstones = new ArrayList<>();
+        for (DDragonStatstone dragonStatstone : dragonStatstones) {
+            if(!dragonStatstone.isRetired){
+                seriesStatstones.add(new SeriesStatstone(dragonStatstone.name, dragonStatstone.description, dragonStatstone.contentId, getMilestone5Value(dragonStatstone.milestones),getMilestone15Value(dragonStatstone.milestones)));
+            }
+        }
+
+        if(seriesStatstones.size() != 3){
+            throw new RuntimeException("Unexpected Statstone count");
+        }
+        return new SeriesStatstonesWithCompletionValues(seriesStatstones);
+    }
+
+    private int getMilestone5Value(List<Integer> values){
+        return values.subList(0, 5).stream()
+                .mapToInt(Integer::intValue)
+                .sum();
+    }
+
+    private int getMilestone15Value(List<Integer> values){
+        int milestone5Value = values.subList(0, 5).stream()
+                .mapToInt(Integer::intValue)
+                .sum();
+
+        return milestone5Value + (values.get(5) * 10);
     }
 
     public List<Challenge> getChallenges(boolean reload) {
@@ -205,9 +327,9 @@ public class LCUService {
         return executeWithExceptionWrapper(() ->  HttpRequest.newBuilder() .GET().uri(new URI(url)).build());
     }
 
-    private <T> Map<String, T> sendRequestForMap(HttpRequest httpRequest, Class<T> clazz){
+    private <T> T sendRequestForJavaType(HttpRequest httpRequest, JavaType javaType){
         String s =  executeWithExceptionWrapper(() -> httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body());
-        return executeWithExceptionWrapper(()-> objectMapper.readValue(s, objectMapper.getTypeFactory().constructMapType(Map.class,String.class, clazz)));
+        return executeWithExceptionWrapper(()-> objectMapper.readValue(s, javaType));
     }
 
 

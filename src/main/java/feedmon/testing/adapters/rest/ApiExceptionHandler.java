@@ -23,6 +23,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<ApiErrorDto> runtimeException(RuntimeException e) {
+        logger.error("Error occurred", e);
         return createErrorResponse(e.getClass().getName() + ": " + e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

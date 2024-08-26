@@ -1,7 +1,8 @@
 package feedmon.testing.adapters.rest.Controllers;
 
 import feedmon.testing.domain.challenges.Challenge;
-import feedmon.testing.domain.inventory.Champion;
+import feedmon.testing.domain.inventory.champion.Champion;
+import feedmon.testing.domain.inventory.champion.ChampionIdWithStatstones;
 import feedmon.testing.service.LCUService;
 import feedmon.testing.usecases.GetLCUConnectionStatusUseCase;
 import feedmon.testing.usecases.dtos.SpecialChallengesDto;
@@ -88,5 +89,10 @@ public class LCUController {
     @GetMapping(value = "skins")
     public List<LolChampionsCollectionsChampionSkin> getAllSkins(){
         return lcuService.getAllSkins();
+    }
+
+    @GetMapping(value = "statstones")
+    public List<ChampionIdWithStatstones> getStatstones(){
+        return lcuService.getStatstoneProgress();
     }
 }

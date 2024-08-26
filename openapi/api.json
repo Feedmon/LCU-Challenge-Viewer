@@ -58,6 +58,30 @@
           }
         }
       },
+      "ChampionIdWithStatstones": {
+        "type": "object",
+        "required": [
+          "championId",
+          "series1Statstones",
+          "series2Statstones",
+          "starterSeriesStatstones"
+        ],
+        "properties": {
+          "starterSeriesStatstones": {
+            "$ref": "#/components/schemas/SeriesStatstonesWithCompletionValues"
+          },
+          "series2Statstones": {
+            "$ref": "#/components/schemas/SeriesStatstonesWithCompletionValues"
+          },
+          "championId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "series1Statstones": {
+            "$ref": "#/components/schemas/SeriesStatstonesWithCompletionValues"
+          }
+        }
+      },
       "LolChampionsCollectionsChampionSkinEmblemPosition": {
         "type": "object",
         "properties": {
@@ -520,6 +544,89 @@
           }
         }
       },
+      "SeriesStatstone": {
+        "type": "object",
+        "required": [
+          "contentId",
+          "currentMilestone",
+          "currentMilestoneCompletionPercentage",
+          "currentValue",
+          "description",
+          "milestone15CompletionPercentage",
+          "milestone15Value",
+          "milestone5CompletionPercentage",
+          "milestone5Value",
+          "name"
+        ],
+        "properties": {
+          "milestone15Value": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "currentMilestone": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "currentMilestoneCompletionPercentage": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "milestone15CompletionPercentage": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "milestone5CompletionPercentage": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "contentId": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "milestone5Value": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "currentValue": {
+            "format": "int32",
+            "type": "integer"
+          }
+        }
+      },
+      "SeriesStatstonesWithCompletionValues": {
+        "type": "object",
+        "required": [
+          "highestMilestoneWithPercentageToNext",
+          "seriesMileStone15CompletionPercentage",
+          "seriesMileStone5CompletionPercentage",
+          "seriesStatstones"
+        ],
+        "properties": {
+          "seriesMileStone5CompletionPercentage": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "highestMilestoneWithPercentageToNext": {
+            "format": "double",
+            "type": "number"
+          },
+          "seriesMileStone15CompletionPercentage": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "seriesStatstones": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeriesStatstone"
+            }
+          }
+        }
+      },
       "Reward": {
         "type": "object",
         "properties": {
@@ -618,6 +725,29 @@
               "application/json": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "lcu-controller"
+        ]
+      }
+    },
+    "/api/lcu-challenges/statstones": {
+      "get": {
+        "operationId": "getStatstones",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChampionIdWithStatstones"
+                  }
                 }
               }
             }

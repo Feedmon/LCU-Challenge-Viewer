@@ -1,27 +1,23 @@
 import {Component, OnInit} from "@angular/core";
-import {ChallengeControllerService} from "../services/challenge-controller-service-wrapper.service";
-import {Champion} from "../../backend-api/api/models/champion";
+import {ChallengeControllerService} from "../services/challenge-controller.service";
 import {ChallengeService} from "../services/challenge.service";
 import {Challenge} from "../../backend-api/api/models/challenge";
 
 @Component({
-  selector: 'app-baumig',
-  templateUrl: 'baumig.component.html'
+  selector: 'app-challenges-overview',
+  templateUrl: 'challenges-overview.component.html'
 })
-export class BaumigComponent implements OnInit {
-
+export class ChallengesOverviewComponent implements OnInit {
 
   connected: boolean;
   challenges: Challenge[];
-  champions: Champion[]
-
 
   constructor(private challengerService: ChallengeService,
-              private testService: ChallengeControllerService) {
+              private challengeControllerService: ChallengeControllerService) {
   }
 
   ngOnInit(): void {
-    this.testService.getConnectionStatus().then(resp => {
+    this.challengeControllerService.getConnectionStatus().then(resp => {
       if (resp) {
         this.getChallenges();
       }
@@ -30,7 +26,7 @@ export class BaumigComponent implements OnInit {
   }
 
   getChallenges(): void {
-    this.testService.getChallenges().then(response => {
+    this.challengerService.getChallenges().then(response => {
       this.challenges = response;
     });
   }

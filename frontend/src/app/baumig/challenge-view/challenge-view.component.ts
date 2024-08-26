@@ -1,13 +1,13 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
-import {RouteParameters} from "../route-parameters";
-import {ChallengeControllerService} from "../services/challenge-controller-service-wrapper.service";
-import {Challenge} from "../../backend-api/api/models/challenge";
-import {ChallengeService} from "../services/challenge.service";
-import {Champion} from "../../backend-api/api/models/champion";
+import {RouteParameters} from "../../route-parameters";
+import {ChallengeControllerService} from "../../services/challenge-controller.service";
+import {Challenge} from "../../../backend-api/api/models/challenge";
+import {ChallengeService} from "../../services/challenge.service";
+import {Champion} from "../../../backend-api/api/models/champion";
 import {
   LolChampionsCollectionsChampionSkin
-} from "../../backend-api/api/models/lol-champions-collections-champion-skin";
+} from "../../../backend-api/api/models/lol-champions-collections-champion-skin";
 
 @Component({
   selector: 'app-challenge-view',

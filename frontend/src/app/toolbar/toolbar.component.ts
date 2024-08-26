@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {ChallengeService} from "../services/challenge.service";
-import {ChallengeControllerService} from "../services/challenge-controller-service-wrapper.service";
+import {ChallengeControllerService} from "../services/challenge-controller.service";
 
 @Component({
   selector: 'app-toolbar',

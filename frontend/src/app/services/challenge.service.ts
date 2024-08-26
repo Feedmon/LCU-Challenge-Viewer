@@ -1,8 +1,8 @@
 import {Injectable} from "@angular/core";
-import {ChallengeControllerService} from "./challenge-controller-service-wrapper.service";
+import {ChallengeControllerService} from "./challenge-controller.service";
 import {SpecialChallengesDto} from "../../backend-api/api/models/special-challenges-dto";
 import {Champion} from "../../backend-api/api/models/champion";
-import {Challenge, LolChampionsCollectionsChampionSkin} from "src/backend-api/api/models";
+import {Challenge, ChampionIdWithStatstones, LolChampionsCollectionsChampionSkin} from "src/backend-api/api/models";
 import {Subject} from "rxjs";
 
 @Injectable()
@@ -14,17 +14,20 @@ export class ChallengeService {
   private challenges: Challenge[] = [];
   private champions: Champion[] = [];
   private skins: LolChampionsCollectionsChampionSkin[] = [];
+  private eternals: ChampionIdWithStatstones[] = [];
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
-  champSpecifivChallengesNotify$ = this.champSpecificChallengesNotifySubject.asObservable();
+  champSpecificChallengesNotify$ = this.champSpecificChallengesNotifySubject.asObservable();
   // eslint-disable-next-line @typescript-eslint/member-ordering
   challengesNotify$ = this.challengesNotifySubject.asObservable();
 
-  constructor(private testService: ChallengeControllerService) {
-    this.testService.getConnectionStatus().then(resp => {
+  constructor(private challengeControllerService: ChallengeControllerService) {
+    this.challengeControllerService.getConnectionStatus().then(resp => {
       if (resp) {
-        this.getChallenges();
-        this.getChampions();
+        void this.getChallenges();
+        void this.getChampions();
+        void this.getSkins();
+        void this.getChampSpecificChallenges()
       }
     });
   }
@@ -34,7 +37,7 @@ export class ChallengeService {
       return Promise.resolve(this.skins);
     }
 
-    return this.testService.getAllSkins().then(response => {
+    return this.challengeControllerService.getAllSkins().then(response => {
       this.skins = response;
       return response
     });
@@ -45,7 +48,7 @@ export class ChallengeService {
       return Promise.resolve(this.champions);
     }
 
-  return this.testService.getAllChampions().then(response => {
+  return this.challengeControllerService.getAllChampions().then(response => {
       this.champions = response;
       return response
     });
@@ -56,7 +59,7 @@ export class ChallengeService {
       return Promise.resolve( this.champSpecificChallenges);
     }
 
-    return this.testService.getChampSpecificChallenges().then(response => {
+    return this.challengeControllerService.getChampSpecificChallenges().then(response => {
       this.champSpecificChallenges = response;
       return response;
     });
@@ -67,15 +70,26 @@ export class ChallengeService {
       return Promise.resolve( this.challenges);
     }
 
-    return this.testService.getChallenges().then(response => {
+    return this.challengeControllerService.getChallenges().then(response => {
       this.challenges = response;
       this.notifyChampSpecificChallenges();
       return response;
     });
   }
 
+  getEternals(): Promise<ChampionIdWithStatstones[]> {
+    if(this.eternals.length !== 0){
+      return Promise.resolve( this.eternals);
+    }
+
+    return this.challengeControllerService.getEternals().then(response => {
+      this.eternals = response;
+      return response;
+    });
+  }
+
   reloadChallenges(): Promise<SpecialChallengesDto[]> {
-    return this.testService.reloadChallenges().then(challenges => {
+    return this.challengeControllerService.reloadChallenges().then(challenges => {
       this.challenges = challenges;
       this.notifyChallenges();
       this.champSpecificChallenges = [];

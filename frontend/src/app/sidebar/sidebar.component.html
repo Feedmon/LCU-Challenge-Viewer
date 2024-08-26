@@ -1,17 +1,19 @@
-<div class="clickable" [routerLink]="['/']">
-  <h1>Home</h1>
-</div>
-
-<button mat-raised-button
-        color="primary"
-        (click)="goToChallengeView()">
-  Challenge view
+<button mat-button
+        (click)="goToChallengesView()">
+  All Challenges
 </button>
 
-<button mat-raised-button
-        style="margin-top: 15px;"
-        color="primary"
-        (click)="goToChampionsView()">
-  Champions view
+<button mat-button
+        (click)="goToChallengeAutoCheckListView()">
+  Challenge AutoChecklist
 </button>
 
+<button mat-button
+        (click)="goToChampionsToChallenges()">
+  Champion completion for Challenges
+</button>
+
+<button mat-button
+        (click)="goToEternalsView()">
+  Eternals overview
+</button>

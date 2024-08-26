@@ -1,7 +1,7 @@
 package feedmon.testing.usecases.dtos;
 
 import feedmon.testing.domain.challenges.Challenge;
-import feedmon.testing.domain.inventory.Champion;
+import feedmon.testing.domain.inventory.champion.Champion;
 import feedmon.testing.util.enums.Leagues;
 import generated.LolChampionsCollectionsChampionSkin;
 

@@ -1,15 +1,19 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {BaumigComponent} from "./baumig/baumig.component";
-import {ChampionsViewComponent} from "./champions-view/champions-view.component"
-import {ChallengeViewComponent} from "./challenge-view/challenge-view.component";
+import {ChallengesOverviewComponent} from "./baumig/challenges-overview.component";
+import {
+  ChampionsChallengeCompletionComponent
+} from "./champions-challenge-completion/champions-challenge-completion.component"
+import {ChallengeViewComponent} from "./baumig/challenge-view/challenge-view.component";
 import {RouteParameters} from "./route-parameters";
-import {ChampionChallengeViewComponent} from "./champion-challenge-view/champion-challenge-view.component";
+import {ChallengeAutoChecklistComponent} from "./challenge-auto-checklist/challenge-auto-checklist.component";
+import {EternalsProgressionComponent} from "./eternals-progression/eternals-progression.component";
 
 const routes: Routes = [
-  {path: 'home', component: BaumigComponent},
-  {path: 'challenges', component: ChampionChallengeViewComponent},
-  {path: 'champions', component: ChampionsViewComponent},
+  {path: 'challenges', component: ChallengesOverviewComponent},
+  {path: 'challengeAutoCheckList', component: ChallengeAutoChecklistComponent},
+  {path: 'championsToChallenges', component: ChampionsChallengeCompletionComponent},
+  {path: 'eternals', component: EternalsProgressionComponent},
   {path:`challenge-details/:${RouteParameters.challengeName}`,component:ChallengeViewComponent},
   {path:`skin-challenge-details/:${RouteParameters.challengeName}`,component:ChallengeViewComponent},
   {path:`champ-challenge-details/:${RouteParameters.challengeName}`,component:ChallengeViewComponent},

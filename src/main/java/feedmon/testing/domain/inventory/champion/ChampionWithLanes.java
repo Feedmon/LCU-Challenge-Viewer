@@ -1,4 +1,4 @@
-package feedmon.testing.domain.inventory;
+package feedmon.testing.domain.inventory.champion;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;

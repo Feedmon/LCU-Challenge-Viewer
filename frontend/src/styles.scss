@@ -22,3 +22,10 @@ h1:before, h2:before, h3:before {
 .full-width {
   width: 100%;
 }
+
+.hiddenText{
+  width:0;
+  height:0;
+  overflow:hidden;
+  display:inline-block;
+}

@@ -10,7 +10,7 @@
   </mat-form-field>
 
   <mat-form-field >
-    <mat-label>Filter Table</mat-label>
+    <mat-label>Filter Champions</mat-label>
     <input [formControl]="tableFilter" matInput placeholder="Champion Name" >
   </mat-form-field>
 
@@ -18,7 +18,7 @@
         <ng-container matColumnDef="champion">
           <mat-header-cell *matHeaderCellDef> Champion </mat-header-cell>
           <mat-cell *matCellDef="let element">
-              <img [matTooltip]="element.name" [src]="'data:image/jpeg;base64,' + element.image" alt="Image" style="width: 45px; height: 45px;">
+            <img [matTooltip]="element.name" [src]="'data:image/jpeg;base64,' + element.image" alt="Image" style="width: 45px; height: 45px;">
             <div class="hiddenText"><span>{{element.name}}</span></div>
           </mat-cell>
         </ng-container>

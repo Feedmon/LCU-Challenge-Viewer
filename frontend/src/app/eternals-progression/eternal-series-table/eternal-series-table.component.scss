@@ -1,0 +1,37 @@
+.mat-header-cell, mat-cell {
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid #ccc;
+}
+
+mat-header-cell:last-child, mat-cell:last-child {
+  border-right: none;
+}
+
+.mat-cell {
+  height: 105px;
+}
+
+.mat-header-cell:first-child,
+.mat-cell:first-child {
+  width: 85px;
+  min-width: 85px;
+  max-width: 85px;
+  overflow: hidden;
+}
+
+.text-cell {
+ // display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.series-item {
+  padding: 5px 0;
+}
+
+.separator {
+  border-top: 1px solid #ddd;
+  margin: 5px 0;
+}

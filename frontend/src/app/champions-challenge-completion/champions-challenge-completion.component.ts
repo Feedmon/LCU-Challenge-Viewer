@@ -15,10 +15,10 @@ interface ChampData {
 
 @Component({
   selector: 'app-champions-view',
-  templateUrl: 'champions-view.component.html',
-  styleUrls: ['./champions-view.component.scss']
+  templateUrl: 'champions-challenge-completion.component.html',
+  styleUrls: ['./champions-challenge-completion.component.scss']
 })
-export class ChampionsViewComponent implements OnInit {
+export class ChampionsChallengeCompletionComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
     challenges: SpecialChallengesDto[];
@@ -33,19 +33,19 @@ export class ChampionsViewComponent implements OnInit {
   constructor(private challengeService: ChallengeService) {
   }
 
-    updateColumns(selectedColumns: string[]) {
-        this.displayedColumns = ['champion', ...selectedColumns];
+  updateColumns(selectedColumns: string[]) {
+    this.displayedColumns = ['champion', ...selectedColumns];
 
-        this.dataSource.data = this.champions.map(champ => {
+    this.dataSource.data = this.champions.map(champ => {
             return {
-                imageUrl: champ.squarePortraitPath ??"",
-                image: champ.squarePortraitJpg,
-                name: champ.name ??"",
-                id: champ.id ?? -1
+              imageUrl: champ.squarePortraitPath ??"",
+              image: champ.squarePortraitJpg,
+              name: champ.name ??"",
+              id: champ.id ?? -1
             }
-        });
-      this.dataSource.paginator = this.paginator;
-      }
+    });
+    this.dataSource.paginator = this.paginator;
+  }
 
    ngOnInit(): void {
      this.dataSource.filterPredicate = filterOverride
@@ -58,9 +58,9 @@ export class ChampionsViewComponent implements OnInit {
        }
      })
 
-      this.challengeService.getChampions().then(res => this.champions = res);
+     this.challengeService.getChampions().then(res => this.champions = res);
      this.updateTable();
-     this.challengeService.champSpecifivChallengesNotify$.subscribe(() => {
+     this.challengeService.champSpecificChallengesNotify$.subscribe(() => {
         this.updateTable();
      })
     }
