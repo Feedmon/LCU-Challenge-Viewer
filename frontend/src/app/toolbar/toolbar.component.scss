@@ -7,7 +7,7 @@
   background-color: #a9a9a9;
   color: black;
   padding: 10px 15px;
-  height: 50px;
+  height: 55px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 4px;
 }
@@ -15,6 +15,7 @@
 .button-group {
   display: flex;
   gap: 10px;
+  user-select: none;
 }
 
 .status {
@@ -29,4 +30,11 @@
 
 .disconnected {
   color: #a52019;
+}
+
+mat-progress-bar {
+  position: fixed; /* Damit der Progress Bar an einer festen Position bleibt */
+  top: 70px; /* Unterhalb der Toolbar, wenn die Toolbar eine Höhe von 50px hat */
+  width: 100%; /* Über die gesamte Breite der Seite */
+  z-index: 2000; /* Ein höherer z-index-Wert, um sicherzustellen, dass er über anderen Elementen angezeigt wird */
 }
