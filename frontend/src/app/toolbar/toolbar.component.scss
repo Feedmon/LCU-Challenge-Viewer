@@ -33,8 +33,8 @@
 }
 
 mat-progress-bar {
-  position: fixed; /* Damit der Progress Bar an einer festen Position bleibt */
-  top: 70px; /* Unterhalb der Toolbar, wenn die Toolbar eine Höhe von 50px hat */
-  width: 100%; /* Über die gesamte Breite der Seite */
-  z-index: 2000; /* Ein höherer z-index-Wert, um sicherzustellen, dass er über anderen Elementen angezeigt wird */
+  position: fixed;
+  top: 70px;
+  width: 100%;
+  z-index: 2000;
 }
