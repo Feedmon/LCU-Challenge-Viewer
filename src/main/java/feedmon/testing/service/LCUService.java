@@ -24,6 +24,7 @@ import generated.LolChampionsCollectionsChampionSkin;
 import generated.LolSummonerSummoner;
 import generated.UriMap;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 
 import java.io.IOException;
 import java.net.URI;
@@ -197,6 +198,10 @@ public class LCUService {
             return championIdWithStatstones;
         }
 
+        System.out.println("start loading eternals");
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
         HttpRequest request = buildGetRequestForUrl("https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/statstones.json");
         JavaType javaType = objectMapper.getTypeFactory().constructType( DDragonStatstonesMappings.class);
         DDragonStatstonesMappings statstonesMappings = sendRequestForJavaType(request, javaType);
@@ -219,6 +224,9 @@ public class LCUService {
         }
 
         championIdWithStatstones = championIdWithStatstonesMap.values().stream().map(this::enterAndCalculateStatstoneDataForChampionIdWithStatstones).toList();
+
+        stopWatch.stop();
+        System.out.println("Completed loading eternals. Time needed: " + stopWatch.getTotalTimeMillis() + "ms");
 
         return championIdWithStatstones;
     }
