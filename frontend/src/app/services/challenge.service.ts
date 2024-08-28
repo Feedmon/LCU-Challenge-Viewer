@@ -10,6 +10,7 @@ export class ChallengeService {
 
   private champSpecificChallengesNotifySubject = new Subject<void>();
   private challengesNotifySubject = new Subject<void>();
+  private eternalsNotifySubject = new Subject<void>();
   private champSpecificChallenges: SpecialChallengesDto[] = [];
   private challenges: Challenge[] = [];
   private champions: Champion[] = [];
@@ -20,6 +21,8 @@ export class ChallengeService {
   champSpecificChallengesNotify$ = this.champSpecificChallengesNotifySubject.asObservable();
   // eslint-disable-next-line @typescript-eslint/member-ordering
   challengesNotify$ = this.challengesNotifySubject.asObservable();
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  eternalsNotify$ = this.eternalsNotifySubject.asObservable();
 
   constructor(private challengeControllerService: ChallengeControllerService) {
     this.challengeControllerService.getConnectionStatus().then(resp => {
@@ -97,12 +100,24 @@ export class ChallengeService {
     })
   }
 
+  reloadEternals(): Promise<ChampionIdWithStatstones[]> {
+    return this.challengeControllerService.reloadEternals().then(eternals => {
+      this.eternals = eternals;
+      this.notifyEternals();
+      return this.eternals;
+    })
+  }
+
   notifyChampSpecificChallenges() {
     this.champSpecificChallengesNotifySubject.next();
   }
 
   notifyChallenges() {
     this.challengesNotifySubject.next();
+  }
+
+  notifyEternals() {
+    this.eternalsNotifySubject.next();
   }
 }
 

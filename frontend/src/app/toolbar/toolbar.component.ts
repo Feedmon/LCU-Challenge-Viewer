@@ -27,6 +27,11 @@ export class ToolbarComponent implements OnInit {
     this.challengeService.reloadChallenges().then(()=> this.loading = false);
   }
 
+  reloadEternals(): void {
+    this.loading = true;
+    this.challengeService.reloadEternals().then(()=> this.loading = false);
+  }
+
   startConnection(): void {
    this.testService.startConnection();
   }

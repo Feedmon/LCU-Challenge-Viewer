@@ -1,10 +1,10 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {ChallengesOverviewComponent} from "./baumig/challenges-overview.component";
+import {ChallengesOverviewComponent} from "./challenge-overview/challenges-overview.component";
 import {
   ChampionsChallengeCompletionComponent
 } from "./champions-challenge-completion/champions-challenge-completion.component"
-import {ChallengeViewComponent} from "./baumig/challenge-view/challenge-view.component";
+import {ChallengeViewComponent} from "./challenge-overview/challenge-view/challenge-view.component";
 import {RouteParameters} from "./route-parameters";
 import {ChallengeAutoChecklistComponent} from "./challenge-auto-checklist/challenge-auto-checklist.component";
 import {EternalsProgressionComponent} from "./eternals-progression/eternals-progression.component";

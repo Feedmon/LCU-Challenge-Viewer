@@ -855,6 +855,29 @@
         ]
       }
     },
+    "/api/lcu-challenges/reload-statstone-data": {
+      "get": {
+        "operationId": "reloadStatstoneData",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChampionIdWithStatstones"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "lcu-controller"
+        ]
+      }
+    },
     "/api/lcu-challenges/reload-challenge-data": {
       "get": {
         "operationId": "reloadChallengeData",

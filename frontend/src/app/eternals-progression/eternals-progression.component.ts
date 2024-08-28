@@ -24,14 +24,14 @@ export class EternalsProgressionComponent implements OnInit {
 
   private champions: Champion[];
 
-  constructor(private challengerService: ChallengeService) {
+  constructor(private challengeService: ChallengeService) {
   }
 
   ngOnInit(): void {
     Promise.all([
-      this.challengerService.getEternals(),
-      this.challengerService.getChampions(),
-      this.challengerService.getChallenges()
+      this.challengeService.getEternals(),
+      this.challengeService.getChampions(),
+      this.challengeService.getChallenges()
     ]).then(([eternalsResp, championsResp, challengesResp]) => {
       this.eternals = eternalsResp;
       this.champions = championsResp;
@@ -40,13 +40,8 @@ export class EternalsProgressionComponent implements OnInit {
     }).catch(error => {
       console.error("Fehler beim Laden der Daten:", error);
     });
-    this.challengerService.getEternals().then(resp => {
-      this.eternals = resp;
-    });
 
-    this.challengerService.getChampions().then(resp => {
-      this.champions = resp;
-    });
+    this.challengeService.eternalsNotify$.subscribe(()=> this.reloadEternals())
   }
 
   combineChampionsWithStarterSeries(): ChampionWithEternalSeries[] {
@@ -92,5 +87,10 @@ export class EternalsProgressionComponent implements OnInit {
 
       return null;
     }).filter(item => item !== null) as ChampionWithEternalSeries[]
+  }
+
+  private reloadEternals(): void {
+    this.eternals = [];
+    this.challengeService.getEternals().then(eternals => this.eternals = eternals);
   }
 }

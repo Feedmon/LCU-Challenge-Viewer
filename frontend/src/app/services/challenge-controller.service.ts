@@ -39,6 +39,10 @@ export class ChallengeControllerService {
     return this.lcuControllerService.reloadChallengeData().toPromise();
   }
 
+  reloadEternals(): Promise<ChampionIdWithStatstones[]> {
+    return this.lcuControllerService.reloadStatstoneData().toPromise();
+  }
+
   getChallengeInfo(challengeName: string): Promise<Challenge> {
     return this.lcuControllerService.getChallengeInfo({challengeName}).toPromise();
   }

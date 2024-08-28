@@ -1,6 +1,6 @@
 import {NgModule} from "@angular/core";
 import {CommonModule, NgForOf, NgIf} from '@angular/common';
-import {ChallengesOverviewComponent} from "../baumig/challenges-overview.component";
+import {ChallengesOverviewComponent} from "../challenge-overview/challenges-overview.component";
 import {
   ChampionsChallengeCompletionComponent
 } from "../champions-challenge-completion/champions-challenge-completion.component"
@@ -11,8 +11,8 @@ import {ChallengeControllerService} from "../services/challenge-controller.servi
 import {OpenMaterialDialogService} from "./open-material-dialog.service";
 import {MatSortModule} from "@angular/material/sort";
 import {MatPaginatorModule} from "@angular/material/paginator";
-import {ChallengeTableOverviewComponent} from "../baumig/table/challenge-table-overview.component";
-import {ChallengeViewComponent} from "../baumig/challenge-view/challenge-view.component";
+import {ChallengeTableOverviewComponent} from "../challenge-overview/table/challenge-table-overview.component";
+import {ChallengeViewComponent} from "../challenge-overview/challenge-view/challenge-view.component";
 import {RouterModule} from "@angular/router";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatSelectModule} from "@angular/material/select";

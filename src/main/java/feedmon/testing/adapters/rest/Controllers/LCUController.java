@@ -93,6 +93,11 @@ public class LCUController {
 
     @GetMapping(value = "statstones")
     public List<ChampionIdWithStatstones> getStatstones(){
-        return lcuService.getStatstoneProgress();
+        return lcuService.getStatstoneProgress(false);
+    }
+
+    @GetMapping(value = "reload-statstone-data")
+    public List<ChampionIdWithStatstones> reloadStatstoneData(){
+        return lcuService.getStatstoneProgress(true);
     }
 }

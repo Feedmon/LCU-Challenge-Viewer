@@ -81,7 +81,7 @@ public class LCUService {
         loggedInSummoner = executeWithExceptionWrapper(() -> clientApi.getCurrentSummoner());
         getChallenges(true);
         getChampions();
-        getStatstoneProgress();
+        getStatstoneProgress(true);
     }
 
     public void stopConnection() {
@@ -117,7 +117,7 @@ public class LCUService {
         return challenges.stream().map(chall -> new SpecialChallengesDto(chall, skins, champions)).toList();
     }
 
-    private List<Champion> getChampions() {
+    private synchronized List<Champion> getChampions() {
         if (champions != null) {
             return champions;
         }
@@ -178,7 +178,7 @@ public class LCUService {
         return this.loggedInSummoner!= null && clientApi.isConnected();
     }
 
-    public List<LolChampionsCollectionsChampionSkin> getAllSkins() {
+    public synchronized List<LolChampionsCollectionsChampionSkin> getAllSkins() {
         if (skins != null) {
             return skins;
         }
@@ -192,8 +192,8 @@ public class LCUService {
         executeWithExceptionWrapper(() -> clientApi.executeGet("/lol-champions/v1/inventories/" + loggedInSummoner.summonerId + "/champions/" + id + "/skins", LolChampionsCollectionsChampionSkin[].class));
     }
 
-    public synchronized List<ChampionIdWithStatstones> getStatstoneProgress() {
-        if(championIdWithStatstones != null){
+    public synchronized List<ChampionIdWithStatstones> getStatstoneProgress(boolean reload) {
+        if(championIdWithStatstones != null && !reload){
             return championIdWithStatstones;
         }
 
@@ -299,7 +299,7 @@ public class LCUService {
         return milestone5Value + (values.get(5) * 10);
     }
 
-    public List<Challenge> getChallenges(boolean reload) {
+    public synchronized List<Challenge> getChallenges(boolean reload) {
         if (challenges != null && !reload) {
             return challenges;
         }
