@@ -9,6 +9,7 @@ import {Challenge} from "../../../backend-api/api/models/challenge";
 interface TableFilterChanges {
   tableFilter?: SimpleChange;
   challengeFilter?: SimpleChange;
+  championWithEternalSeries?: SimpleChange;
 }
 
 @Component({

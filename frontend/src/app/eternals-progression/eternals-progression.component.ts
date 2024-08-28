@@ -7,6 +7,7 @@ import {
   SeriesStatstonesWithCompletionValues
 } from "../../backend-api/api/models/series-statstones-with-completion-values";
 import {Challenge} from "../../backend-api/api/models/challenge";
+import {Router} from "@angular/router";
 
 export interface ChampionWithEternalSeries extends Champion, SeriesStatstonesWithCompletionValues {}
 
@@ -24,7 +25,8 @@ export class EternalsProgressionComponent implements OnInit {
 
   private champions: Champion[];
 
-  constructor(private challengeService: ChallengeService) {
+  constructor(private challengeService: ChallengeService,
+              private router: Router) {
   }
 
   ngOnInit(): void {
@@ -90,7 +92,8 @@ export class EternalsProgressionComponent implements OnInit {
   }
 
   private reloadEternals(): void {
-    this.eternals = [];
-    this.challengeService.getEternals().then(eternals => this.eternals = eternals);
+    this.router.navigateByUrl('/RefreshComponent', { skipLocationChange: true }).then(() => {
+      this.router.navigate(['eternals']);
+    });
   }
 }

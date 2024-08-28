@@ -51,7 +51,7 @@
     <mat-cell *matCellDef="let element" class="text-cell" >
       <ng-template [ngIf]="typedChampionWithEternals(element)" let-champion="ngIf">
         <div *ngFor="let series of champion.seriesStatstones; let i = index" class="series-item" [matTooltip]="getToolTipForMileStoneProgress(series)" matTooltipPosition="left">
-          {{series.currentMilestone}} | {{series.currentMilestoneCompletionPercentage}}%
+         {{series.currentValue}} | {{series.currentMilestone}} | {{series.currentMilestoneCompletionPercentage}}%
           <div *ngIf="i < 2" class="separator"></div>
         </div>
       </ng-template>
