@@ -92,7 +92,7 @@ export class ChallengeAutoChecklistComponent implements OnInit{
       .then(response=> {
         this.challenges = response;
         this.subscribeToChallengeChange();
-        this.selectedChallenge.patchValue(this.challenges[38]);
+        this.selectedChallenge.patchValue(this.challenges[2]);
       });
   }
 
