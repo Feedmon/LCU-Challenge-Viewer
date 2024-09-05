@@ -1,13 +1,18 @@
 <div class="top-bar">
   <div class="button-group">
-    <button mat-button (click)="startConnection()">try connecting to client</button>
-    <button mat-button (click)="stopConnection()">stop connection</button>
+    <button mat-button (click)="startConnection()">connect to client</button>
+    <button mat-button (click)="stopConnection()">stop client connection</button>
     <button mat-button (click)="reloadChallenges()">reload challenge data</button>
     <button mat-button (click)="reloadEternals()">reload eternal data</button>
   </div>
 
+  <div class="backend-status">
+    Java-Service:
+    <span [ngClass]="backendService">{{ backendService == "error" ? 'failed to start' : backendService }}</span>
+  </div>
+
   <div class="status">
-    Status:
+    Client Status:
 
     <span *ngIf="connected" class="connected">
   Connected

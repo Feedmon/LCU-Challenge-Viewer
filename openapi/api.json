@@ -878,6 +878,26 @@
         ]
       }
     },
+    "/api/lcu-challenges/backend-running": {
+      "get": {
+        "operationId": "isBackendRunning",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "lcu-controller"
+        ]
+      }
+    },
     "/api/lcu-challenges/reload-challenge-data": {
       "get": {
         "operationId": "reloadChallengeData",

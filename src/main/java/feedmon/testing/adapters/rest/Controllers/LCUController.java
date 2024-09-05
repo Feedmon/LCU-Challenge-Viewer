@@ -26,6 +26,11 @@ public class LCUController {
         this.lcuService = lcuService;
     }
 
+    @GetMapping(value = "backend-running")
+    public Boolean isBackendRunning() {
+        return true;
+    }
+
     @GetMapping(value = "connection-status")
     public Boolean getLCUConnectionStatus() {
         return getLCUConnectionStatusUseCase.execute();

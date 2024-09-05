@@ -35,7 +35,7 @@ export class ChallengeAutoChecklistComponent implements OnInit{
   }
 
   ngOnInit() :void {
-    this.challengeControllerService.waitForBackendConnection().subscribe({
+    this.challengeControllerService.waitForClientConnection().subscribe({
       next: () => {
         this.initializeComponent();
       },

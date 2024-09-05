@@ -13,6 +13,7 @@ function createWindow() {
       nodeIntegration: true
     }
   });
+  win.setMenu(null);
   win.maximize();
   win.loadFile(path.join(app.getAppPath(), 'dist/index.html'));
 }

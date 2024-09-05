@@ -24,12 +24,16 @@
   user-select: none;
 }
 
-.connected {
+.connected, .running {
   color: #0b620b;
 }
 
-.disconnected {
+.disconnected, .error, .stopped {
   color: #a52019;
+}
+
+.starting {
+  color: orangered;
 }
 
 mat-progress-bar {

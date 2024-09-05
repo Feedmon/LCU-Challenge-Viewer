@@ -25,7 +25,7 @@ export class ChallengeService {
   eternalsNotify$ = this.eternalsNotifySubject.asObservable();
 
   constructor(private challengeControllerService: ChallengeControllerService) {
-    this.challengeControllerService.waitForBackendConnection().subscribe({
+    this.challengeControllerService.waitForClientConnection().subscribe({
       next: () => {
         void this.getChallenges();
         void this.getChampions();
