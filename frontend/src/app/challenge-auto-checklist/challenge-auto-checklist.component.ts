@@ -34,17 +34,15 @@ export class ChallengeAutoChecklistComponent implements OnInit{
               private challengeService: ChallengeService) {
   }
 
-  ngOnInit() :void{
-    this.challengeService.getChampions().then(champions => {
-      this.champions = champions;
-      this.initializeChallengeData();
+  ngOnInit() :void {
+    this.challengeControllerService.waitForBackendConnection().subscribe({
+      next: () => {
+        this.initializeComponent();
+      },
+      error: (err) => {
+        console.error('Error while waiting for backend connection:', err);
+      }
     });
-
-    this.championSearch.valueChanges.subscribe(() => {
-      this.filterChamps()
-    })
-
-    this.challengeService.challengesNotify$.subscribe(()=> this.loadChallengeData())
   }
 
   visibilityChanged():void {
@@ -59,6 +57,19 @@ export class ChallengeAutoChecklistComponent implements OnInit{
     }
 
     this.filterChamps();
+  }
+
+  private initializeComponent(): void {
+    this.challengeService.getChampions().then(champions => {
+      this.champions = champions;
+      this.initializeChallengeData();
+    });
+
+    this.championSearch.valueChanges.subscribe(() => {
+      this.filterChamps()
+    })
+
+    this.challengeService.challengesNotify$.subscribe(()=> this.loadChallengeData())
   }
 
   private subscribeToChallengeChange(): void {

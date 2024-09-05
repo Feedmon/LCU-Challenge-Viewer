@@ -4,6 +4,8 @@ button {
   margin-top: 15px;
   margin-bottom: 25px;
   text-align: left;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 button:last-child {

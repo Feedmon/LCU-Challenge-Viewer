@@ -13,13 +13,23 @@ export class ToolbarComponent implements OnInit {
   loading = false;
 
   constructor(private challengeService: ChallengeService,
-              private testService: ChallengeControllerService) {
+              private challengeControllerService: ChallengeControllerService) {
   }
 
   ngOnInit(): void {
-    setInterval(() => {
-       this.testConnection()
-    }, 100);
+    this.loading = true;
+    this.challengeControllerService.waitForBackendConnection().subscribe({
+      next: () => {
+        this.loading = false;
+        setInterval(() => {
+          this.testConnection()
+        }, 500);
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error('Error while waiting for backend connection:', err);
+      }
+    });
   }
 
   reloadChallenges(): void {
@@ -33,15 +43,15 @@ export class ToolbarComponent implements OnInit {
   }
 
   startConnection(): void {
-   this.testService.startConnection();
+   this.challengeControllerService.startConnection();
   }
 
   stopConnection(): void {
-    this.testService.stopConnection();
+    this.challengeControllerService.stopConnection();
   }
 
   testConnection(): void {
-    this.testService.getConnectionStatus().then(resp => {
+    this.challengeControllerService.getConnectionStatus().then(resp => {
       this.connected = resp;
     });
   }

@@ -1,17 +1,48 @@
 {
-  "name": "challenge-viewer",
-  "version": "1.0.0",
-  "description": "School Scheduler Frontend",
+  "name": "lcu-challenge-viewer",
+  "version": "1.2.0",
   "repository": "github somewhere",
   "license": "UNLICENSED",
   "author": "Feedmon",
+  "main": "main.js",
+  "build": {
+    "appId": "com.lcu.challenge.viewer",
+    "productName": "LCU Challenge Viewer",
+    "directories": {
+      "output": "build"
+    },
+    "files": [
+      "dist/",
+      "main.js"
+    ],
+    "extraResources": [
+      {
+        "from": "dist/assets/backend/",
+        "to": "backend/",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "dist/assets/bee_happy.ico"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "pkg"
+      ],
+      "icon": "dist/assets/bee_happy.icns"
+    }
+  },
   "scripts": {
     "ng": "ng",
     "ng-openapi-gen": "ng-openapi-gen -c ng-openapi-gen.json",
     "prestart": "copyfiles -u 2 src/images/**/* dist/images/ && npm run ng-openapi-gen",
     "start": "ng serve --port 9000 --host 0.0.0.0",
     "prebuild": "npm run prestart",
-    "build": "ng build",
+    "build": "ng build --base-href ./",
     "prelint": "npm run ng-openapi-gen",
     "lint": "npm run prelint && ng lint",
     "preinstall": "node --version && npm --version",
@@ -21,7 +52,9 @@
     "cy:run": "cypress run --headless --browser firefox",
     "test": "ng test",
     "watch": "ng build --watch --configuration development",
-    "source-map-explorer": "ng build --named-chunks --sourceMap=true && source-map-explorer dist/*.js"
+    "source-map-explorer": "ng build --named-chunks --sourceMap=true && source-map-explorer dist/*.js",
+    "electron": "ng build --base-href ./ && electron .",
+    "electron:build": "ng build --base-href ./ && electron-builder"
   },
   "private": true,
   "dependencies": {
@@ -58,6 +91,8 @@
     "@angular/cli": "14.1.0",
     "@angular/compiler-cli": "14.1.0",
     "@types/jasmine": "4.0.0",
+    "electron": "^32.0.1",
+    "electron-builder": "^25.0.5",
     "jasmine-core": "4.2.0",
     "karma": "6.4.0",
     "karma-chrome-launcher": "3.1.0",

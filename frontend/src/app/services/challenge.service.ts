@@ -25,12 +25,15 @@ export class ChallengeService {
   eternalsNotify$ = this.eternalsNotifySubject.asObservable();
 
   constructor(private challengeControllerService: ChallengeControllerService) {
-    this.challengeControllerService.getConnectionStatus().then(resp => {
-      if (resp) {
+    this.challengeControllerService.waitForBackendConnection().subscribe({
+      next: () => {
         void this.getChallenges();
         void this.getChampions();
         void this.getSkins();
         void this.getChampSpecificChallenges()
+      },
+      error: (err) => {
+        console.error('Error while waiting for backend connection:', err);
       }
     });
   }

@@ -7,6 +7,8 @@ import {Champion} from "../../backend-api/api/models/champion";
 import {Challenge} from '../../backend-api/api/models/challenge';
 import {LcuControllerService} from "../../backend-api/api/services/lcu-controller.service";
 import {ChampionIdWithStatstones} from "../../backend-api/api/models/champion-id-with-statstones";
+import {from, interval, Observable} from "rxjs";
+import {filter, switchMap, takeWhile} from "rxjs/operators";
 
 @Injectable()
 export class ChallengeControllerService {
@@ -14,6 +16,13 @@ export class ChallengeControllerService {
   constructor(private lcuControllerService: LcuControllerService) {
   }
 
+  waitForBackendConnection(): Observable<boolean> {
+    return interval(500).pipe(
+      switchMap(() => from(this.getConnectionStatus())),
+      filter(condition => condition === true),
+      takeWhile(condition => !condition, true)
+    );
+  }
 
   getConnectionStatus(): Promise<boolean> {
     return this.lcuControllerService.getLcuConnectionStatus().toPromise();
