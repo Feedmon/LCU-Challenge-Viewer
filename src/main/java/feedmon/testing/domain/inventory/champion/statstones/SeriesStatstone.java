@@ -24,6 +24,8 @@ public class SeriesStatstone implements Comparable<SeriesStatstone> {
     public Integer milestone5CompletionPercentage;
     @NotNull
     public Integer milestone15CompletionPercentage;
+    @NotNull
+    public Boolean hasOwnership;
 
     public SeriesStatstone(String name,
                            String description,

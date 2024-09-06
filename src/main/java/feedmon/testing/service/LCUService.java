@@ -12,10 +12,7 @@ import feedmon.testing.domain.challenges.Challenge;
 import feedmon.testing.domain.inventory.champion.Champion;
 import feedmon.testing.domain.inventory.champion.ChampionIdWithStatstones;
 import feedmon.testing.domain.inventory.champion.ChampionWithLanes;
-import feedmon.testing.domain.inventory.champion.statstones.SeriesStatstone;
-import feedmon.testing.domain.inventory.champion.statstones.SeriesStatstonesWithCompletionValues;
-import feedmon.testing.domain.inventory.champion.statstones.Statstone;
-import feedmon.testing.domain.inventory.champion.statstones.Statstones;
+import feedmon.testing.domain.inventory.champion.statstones.*;
 import feedmon.testing.domain.inventory.champion.statstones.ddragon.DDragonStatstone;
 import feedmon.testing.domain.inventory.champion.statstones.ddragon.DDragonStatstonesMappings;
 import feedmon.testing.domain.inventory.champion.statstones.ddragon.StatstoneData;
@@ -247,7 +244,7 @@ public class LCUService {
                     mapDataOntoStatstone(series2Statstone, statstone.statstones);
                 }
             }else {
-                throw new RuntimeException("Unknown Eternal series");
+                throw new RuntimeException("Unknown Eternal series: " + statstone.name);
             }
         }
 
@@ -264,11 +261,15 @@ public class LCUService {
                     throw new IllegalStateException("Found more than one element");
                 }).orElseThrow(() -> new RuntimeException("None or more than one element found"));
 
-        seriesStatstone.currentMilestone = statstone.playerRecord.milestoneLevel;
-        seriesStatstone.currentValue = statstone.playerRecord.value;
+        int playerRecordMilestoneLevel = statstone.playerRecord != null ? statstone.playerRecord.milestoneLevel : 0;
+        int playerRecordValue = statstone.playerRecord != null ? statstone.playerRecord.value : 0;
+
+        seriesStatstone.hasOwnership = statstone.playerRecord != null;
+        seriesStatstone.currentMilestone = playerRecordMilestoneLevel;
+        seriesStatstone.currentValue = playerRecordValue;
         seriesStatstone.currentMilestoneCompletionPercentage = (int) (statstone.completionValue * 100);
-        seriesStatstone.milestone5CompletionPercentage = statstone.playerRecord.value >= seriesStatstone.milestone5Value ? 100 : percentageOfMileStone(statstone.playerRecord.value,seriesStatstone.milestone5Value);
-        seriesStatstone.milestone15CompletionPercentage = statstone.playerRecord.value >= seriesStatstone.milestone15Value ? 100 : percentageOfMileStone(statstone.playerRecord.value,seriesStatstone.milestone15Value);
+        seriesStatstone.milestone5CompletionPercentage = playerRecordValue >= seriesStatstone.milestone5Value ? 100 : percentageOfMileStone(playerRecordValue,seriesStatstone.milestone5Value);
+        seriesStatstone.milestone15CompletionPercentage = playerRecordValue >= seriesStatstone.milestone15Value ? 100 : percentageOfMileStone(playerRecordValue,seriesStatstone.milestone15Value);
     }
 
     private int percentageOfMileStone(Integer currentValue, Integer mileStoneValue){
