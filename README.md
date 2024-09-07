@@ -4,6 +4,8 @@ was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by
 
 > Simple tool to see the advancement of LoL challenges.
 
+![challenge-view.PNG](all-challenges-overview.png)
+
 ![challenge-view.PNG](challenge-view.png)
 
 ![champion-view.PNG](champion-view.png)
