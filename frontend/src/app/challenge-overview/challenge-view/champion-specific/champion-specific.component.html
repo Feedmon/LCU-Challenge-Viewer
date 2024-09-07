@@ -1,0 +1,4 @@
+<mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+<div *ngIf="itemsChallengeData && challenge">
+  <app-challenge-completion-view [challenge]="challenge" [itemsChallengeData]="itemsChallengeData"></app-challenge-completion-view>
+</div>

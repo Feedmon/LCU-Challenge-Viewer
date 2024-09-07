@@ -88,10 +88,12 @@ export class ToolbarComponent implements OnInit {
 
   private initializeClientConnectionCheck(): void {
     this.challengeControllerService.waitForClientConnection().subscribe({
-      next: () => {
-        setInterval(() => {
-          this.checkConnection()
-        }, 500);
+      next: res => {
+        if(res) {
+          setInterval(() => {
+            this.checkConnection()
+          }, 500);
+        }
       },
       error: (err) => {
         console.error('Error while waiting for backend connection:', err);

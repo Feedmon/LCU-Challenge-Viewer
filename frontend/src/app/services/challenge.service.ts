@@ -2,7 +2,12 @@ import {Injectable} from "@angular/core";
 import {ChallengeControllerService} from "./challenge-controller.service";
 import {SpecialChallengesDto} from "../../backend-api/api/models/special-challenges-dto";
 import {Champion} from "../../backend-api/api/models/champion";
-import {Challenge, ChampionIdWithStatstones, LolChampionsCollectionsChampionSkin} from "src/backend-api/api/models";
+import {
+  Challenge,
+  ChampionIdWithStatstones,
+  ChampionSkin,
+  Leagues
+} from "src/backend-api/api/models";
 import {Subject} from "rxjs";
 
 @Injectable()
@@ -14,7 +19,7 @@ export class ChallengeService {
   private champSpecificChallenges: SpecialChallengesDto[] = [];
   private challenges: Challenge[] = [];
   private champions: Champion[] = [];
-  private skins: LolChampionsCollectionsChampionSkin[] = [];
+  private skins: ChampionSkin[] = [];
   private eternals: ChampionIdWithStatstones[] = [];
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
@@ -26,11 +31,13 @@ export class ChallengeService {
 
   constructor(private challengeControllerService: ChallengeControllerService) {
     this.challengeControllerService.waitForClientConnection().subscribe({
-      next: () => {
-        void this.getChallenges();
-        void this.getChampions();
-        void this.getSkins();
-        void this.getChampSpecificChallenges()
+      next: res => {
+        if(res) {
+          void this.getChallenges();
+          void this.getChampions();
+          void this.getSkins();
+          void this.getChampSpecificChallenges()
+        }
       },
       error: (err) => {
         console.error('Error while waiting for backend connection:', err);
@@ -38,7 +45,14 @@ export class ChallengeService {
     });
   }
 
-  getSkins(): Promise<LolChampionsCollectionsChampionSkin[]> {
+  idAvailableForChallenge(id: number, challenge: Challenge): boolean {
+    if(challenge.availableIds.length === 0 && !this.isChallengeCompleted(challenge)){
+      return true;
+    }
+    return challenge.availableIds.includes(id) || challenge.completedIds.includes(id);
+  }
+
+  getSkins(): Promise<ChampionSkin[]> {
     if(this.skins.length !== 0){
       return Promise.resolve(this.skins);
     }
@@ -121,6 +135,10 @@ export class ChallengeService {
 
   notifyEternals() {
     this.eternalsNotifySubject.next();
+  }
+
+  private isChallengeCompleted(challenge: Challenge): boolean {
+    return challenge.currentLevel === Leagues.Master || challenge.currentLevel === Leagues.Grandmaster || challenge.currentLevel === Leagues.Challenger;
   }
 }
 

@@ -8,6 +8,7 @@ import {
 } from "../../backend-api/api/models/series-statstones-with-completion-values";
 import {Challenge} from "../../backend-api/api/models/challenge";
 import {Router} from "@angular/router";
+import {ChallengeControllerService} from "../services/challenge-controller.service";
 
 export interface ChampionWithEternalSeries extends Champion, SeriesStatstonesWithCompletionValues {}
 
@@ -26,22 +27,22 @@ export class EternalsProgressionComponent implements OnInit {
   private champions: Champion[];
 
   constructor(private challengeService: ChallengeService,
+              private challengeControllerService: ChallengeControllerService,
               private router: Router) {
   }
 
   ngOnInit(): void {
-    Promise.all([
-      this.challengeService.getEternals(),
-      this.challengeService.getChampions(),
-      this.challengeService.getChallenges()
-    ]).then(([eternalsResp, championsResp, challengesResp]) => {
-      this.eternals = eternalsResp;
-      this.champions = championsResp;
-      this.challenges = challengesResp.filter(chall => chall.description.includes("Eternal") && !chall.name.includes("Mile") && !chall.name.includes("Old Friends"));
-      this.options = this.challenges;
-    }).catch(error => {
-      console.error("Fehler beim Laden der Daten:", error);
+    this.challengeControllerService.waitForClientConnection().subscribe({
+      next: res => {
+        if(res) {
+          this.initializeData();
+        }
+      },
+      error: (err) => {
+        console.error('Error while waiting for backend connection:', err);
+      }
     });
+
 
     this.challengeService.eternalsNotify$.subscribe(()=> this.reloadEternals())
   }
@@ -89,6 +90,21 @@ export class EternalsProgressionComponent implements OnInit {
 
       return null;
     }).filter(item => item !== null) as ChampionWithEternalSeries[]
+  }
+
+  private initializeData(): void {
+    Promise.all([
+      this.challengeService.getEternals(),
+      this.challengeService.getChampions(),
+      this.challengeService.getChallenges()
+    ]).then(([eternalsResp, championsResp, challengesResp]) => {
+      this.eternals = eternalsResp;
+      this.champions = championsResp;
+      this.challenges = challengesResp.filter(chall => chall.description.includes("Eternal") && !chall.name.includes("Mile") && !chall.name.includes("Old Friends"));
+      this.options = this.challenges;
+    }).catch(error => {
+      console.error("Error while loading data:", error);
+    });
   }
 
   private reloadEternals(): void {

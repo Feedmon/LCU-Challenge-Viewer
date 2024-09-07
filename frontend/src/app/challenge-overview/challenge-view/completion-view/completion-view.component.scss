@@ -26,10 +26,6 @@ body {
   user-select: none;
 }
 
-.dropdown {
-  width: 200px;
-}
-
 .middle-text {
   font-size: 18px;
   flex: 1;
@@ -81,11 +77,9 @@ body {
   max-width: 200px;
 }
 
-.icon-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex: 1;
+.retention {
+  font-size: 19px;
+  padding-left: 30%;
 }
 
 .visibility-button {
@@ -118,8 +112,4 @@ img.completed {
   margin-top: 5px;
   font-size: 14px;
   color: #555;
-}
-
-.active-role {
-  background-color: #0a0218eb;
 }

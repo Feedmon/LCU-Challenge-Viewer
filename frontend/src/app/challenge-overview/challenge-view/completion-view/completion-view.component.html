@@ -1,0 +1,40 @@
+<div class="selection-bar">
+  {{challenge.name}}
+  <span class="middle-text">{{ challenge.description }}</span>
+  <div class="rank-container">
+    <span class="item-rank" [ngClass]="challenge.currentLevel.toLowerCase()">{{challenge.currentLevel}}</span>
+    <span *ngIf="challenge.nextThreshold" class="value-to-next-level">
+      {{challenge.currentValue}} / {{challenge.nextThreshold}}
+    </span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="image-container-header">
+    <mat-form-field appearance="fill" class="search-field">
+      <mat-label>Search</mat-label>
+      <input [formControl]="itemSearch" matInput>
+    </mat-form-field>
+
+    <div  class="retention">
+      <span *ngIf="challenge.retired" class="retired">retired</span>
+      <span *ngIf="!challenge.retired" class="progressable">progressable</span>
+    </div>
+
+    <button *ngIf="hideCompletedItems" matTooltip="show completed Items"
+            color="primary" mat-icon-button (click)="visibilityChanged()" class="visibility-button">
+      <mat-icon fontIcon="fa-eye"></mat-icon></button>
+
+    <button *ngIf="!hideCompletedItems" matTooltip="hide completed Items" color="primary" mat-icon-button (click)="visibilityChanged()" class="visibility-button">
+      <mat-icon fontIcon="fa-eye-slash"></mat-icon></button>
+  </div>
+
+  <div class="image-grid">
+    <ng-container *ngFor="let item of itemsChallengeData">
+      <div class="image-item" *ngIf="item.availableForChallenge && !item.excludedBySearch && (!item.completed || item.completed && !hideCompletedItems)">
+        <img [class.completed]="item.completed" [src]="'data:image/jpeg;base64,' + item.squarePortraitJpg" alt="{{ item.name }}">
+        <span class="image-label">{{ item.name }}</span>
+      </div>
+    </ng-container>
+  </div>
+</div>

@@ -50,9 +50,16 @@
     <mat-header-cell *matHeaderCellDef mat-sort-header="highestMilestoneWithPercentageToNext"> Current Milestone | Progress </mat-header-cell>
     <mat-cell *matCellDef="let element" class="text-cell" >
       <ng-template [ngIf]="typedChampionWithEternals(element)" let-champion="ngIf">
-        <div *ngFor="let series of champion.seriesStatstones; let i = index" class="series-item" [matTooltip]="getToolTipForMileStoneProgress(series)" matTooltipPosition="left">
-         {{series.currentValue}} | {{series.currentMilestone}} | {{series.currentMilestoneCompletionPercentage}}%
-          <div *ngIf="i < 2" class="separator"></div>
+        <div *ngIf="champion.seriesStatstones[0].hasOwnership">
+          <div *ngFor="let series of champion.seriesStatstones; let i = index" class="series-item" [matTooltip]="getToolTipForMileStoneProgress(series)" matTooltipPosition="left">
+            {{series.currentValue}} | {{series.currentMilestone}} | {{series.currentMilestoneCompletionPercentage}}%
+            <div *ngIf="i < 2" class="separator"></div>
+          </div>
+        </div>
+        <div *ngIf="!champion.seriesStatstones[0].hasOwnership">
+          <div class="mat-error">
+            Eternal is not owned
+          </div>
         </div>
       </ng-template>
     </mat-cell>

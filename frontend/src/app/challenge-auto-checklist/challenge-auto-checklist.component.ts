@@ -4,7 +4,6 @@ import {Challenge} from "../../backend-api/api/models/challenge";
 import {ChallengeService, clientChampionSearchBehaviour} from "../services/challenge.service";
 import {Champion} from "../../backend-api/api/models/champion";
 import {FormControl} from "@angular/forms";
-import {Leagues} from "../../backend-api/api/models/leagues";
 
 interface ChampChallengeData extends Champion {
   availableForChallenge: boolean;
@@ -36,8 +35,10 @@ export class ChallengeAutoChecklistComponent implements OnInit{
 
   ngOnInit() :void {
     this.challengeControllerService.waitForClientConnection().subscribe({
-      next: () => {
-        this.initializeComponent();
+      next: res => {
+        if(res) {
+          this.initializeComponent();
+        }
       },
       error: (err) => {
         console.error('Error while waiting for backend connection:', err);
@@ -78,24 +79,13 @@ export class ChallengeAutoChecklistComponent implements OnInit{
         this.setupChampionChallengeData(this.champions);
 
         this.championsChallengeData.forEach(champ => {
-          champ.availableForChallenge = this.champAvailableForChallenge(champ, challenge);
+          champ.availableForChallenge = this.challengeService.idAvailableForChallenge(champ.id, challenge);
           champ.completed = challenge.completedIds.includes(champ.id);
           champ.excludedByFilter = this.champShouldBeExcludedByFilter(champ);
         })
         this.filterChamps();
       }
     })
-  }
-
-  private champAvailableForChallenge(champ: ChampChallengeData, challenge: Challenge): boolean {
-    if(challenge.availableIds.length === 0 && !this.isChallengeCompleted(challenge)){
-      return true;
-    }
-    return challenge.availableIds.includes(champ.id) || challenge.completedIds.includes(champ.id);
-  }
-
-  private isChallengeCompleted(challenge: Challenge): boolean {
-    return challenge.currentLevel === Leagues.Master || challenge.currentLevel === Leagues.Grandmaster || challenge.currentLevel === Leagues.Challenger;
   }
 
   private initializeChallengeData(): void {

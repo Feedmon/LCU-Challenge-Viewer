@@ -1,14 +1,12 @@
 import {Injectable} from '@angular/core';
 import {SpecialChallengesDto} from "../../backend-api/api/models/special-challenges-dto";
-import {
-  LolChampionsCollectionsChampionSkin
-} from "../../backend-api/api/models/lol-champions-collections-champion-skin";
 import {Champion} from "../../backend-api/api/models/champion";
 import {Challenge} from '../../backend-api/api/models/challenge';
 import {LcuControllerService} from "../../backend-api/api/services/lcu-controller.service";
 import {ChampionIdWithStatstones} from "../../backend-api/api/models/champion-id-with-statstones";
 import {from, interval, Observable, of} from "rxjs";
 import {catchError, filter, map, switchMap, takeWhile, timeout} from "rxjs/operators";
+import {ChampionSkin, IngameItem} from 'src/backend-api/api/models';
 
 @Injectable()
 export class ChallengeControllerService {
@@ -76,8 +74,12 @@ export class ChallengeControllerService {
     return this.lcuControllerService.getProgressableChampionChallenges().toPromise();
   }
 
-  getAllSkins(): Promise<LolChampionsCollectionsChampionSkin[]> {
+  getAllSkins(): Promise<ChampionSkin[]> {
     return this.lcuControllerService.getAllSkins().toPromise();
+  }
+
+  getAllItems(): Promise<IngameItem[]> {
+    return this.lcuControllerService.getAllItems().toPromise();
   }
 
   getAllChampions(): Promise<Champion[]> {

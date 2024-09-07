@@ -1,9 +1,9 @@
 package feedmon.testing.usecases.dtos;
 
 import feedmon.testing.domain.challenges.Challenge;
+import feedmon.testing.domain.inventory.ChampionSkin;
 import feedmon.testing.domain.inventory.champion.Champion;
 import feedmon.testing.util.enums.Leagues;
-import generated.LolChampionsCollectionsChampionSkin;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class SpecialChallengesDto {
     @NotNull
     private final boolean isRetired;
 
-    public SpecialChallengesDto(Challenge challenge, List<LolChampionsCollectionsChampionSkin> allSkins, List<Champion> champions) {
+    public SpecialChallengesDto(Challenge challenge, List<ChampionSkin> allSkins, List<Champion> champions) {
         this.id = challenge.getId();
         this.challengeType = getStringForChallengeType(challenge.getIdListType());
         this.challengeName = challenge.getName();
@@ -67,7 +67,7 @@ public class SpecialChallengesDto {
         return null;
     }
 
-    private List<Integer> getAvailableIds(Challenge challenge,List<LolChampionsCollectionsChampionSkin> allSkins, List<Champion> champions){
+    private List<Integer> getAvailableIds(Challenge challenge,List<ChampionSkin> allSkins, List<Champion> champions){
         if(!challenge.getAvailableIds().isEmpty()){
             return challenge.getAvailableIds();
         }
@@ -82,7 +82,7 @@ public class SpecialChallengesDto {
         return type.equals(CHAMPION.name()) ? "Champion" : "Skin";
     }
 
-    private String getName(Integer id, List<LolChampionsCollectionsChampionSkin> skins, List<Champion> champions) {
+    private String getName(Integer id, List<ChampionSkin> skins, List<Champion> champions) {
         if (getChallengeType().equalsIgnoreCase(CHAMPION.name())) {
             return champions.stream()
                     .filter(champion -> champion.id.equals(id))

@@ -29,3 +29,51 @@ h1:before, h2:before, h3:before {
   overflow:hidden;
   display:inline-block;
 }
+
+.unranked {
+  color: rgb(46, 46, 46);
+}
+
+.iron {
+  color: rgb(203, 203, 203);
+}
+
+.bronze {
+  color: rgb(255, 190, 125);
+}
+
+.silver {
+  color: rgb(203, 203, 203);
+}
+
+.gold {
+  color: gold;
+}
+
+.platinum {
+  color: rgb(0, 230, 176);
+}
+
+.diamond {
+  color: #576ace;
+}
+
+.master {
+  color: rgb(211, 125, 253);
+}
+
+.grandmaster {
+  color: #e17283;
+}
+
+.challenger {
+  color: #308599;
+}
+
+.retired{
+  color: #a52019;
+}
+
+.progressable{
+  color: #0b620b;
+}

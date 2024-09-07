@@ -1,3 +1,8 @@
+<mat-form-field >
+  <mat-label>Filter Champions</mat-label>
+  <input [formControl]="tableFilter" matInput placeholder="Challenge Name" >
+</mat-form-field>
+
 <table [dataSource]="dataSource" mat-table matSort style="width: 100%">
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef mat-sort-header="name">Name</th>
@@ -61,6 +66,6 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>
-<mat-paginator [pageSizeOptions]="[1,5,9,15,21,25,49]"
-               [pageSize]="21"
+<mat-paginator [pageSizeOptions]="[1,5,9,15,21,25,49,199]"
+               [pageSize]="25"
                [showFirstLastButtons]='true'></mat-paginator>

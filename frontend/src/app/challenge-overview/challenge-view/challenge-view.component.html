@@ -1,4 +1,4 @@
-<div *ngIf="challenge && champions && skins">
+<div *ngIf="challenge">
   Challenge Name: {{challenge.name}}
   <br/>
   Challenge description: {{challenge.description}}
@@ -10,6 +10,6 @@
   available amount: {{challenge.availableIds.length}}
   <br/>
 <div *ngFor="let id of challenge.availableIds ">
-  {{getNameOrId(id)}}
+  {{id}}
 </div>
 </div>

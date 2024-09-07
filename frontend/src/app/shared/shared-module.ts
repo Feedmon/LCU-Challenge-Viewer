@@ -25,6 +25,13 @@ import {MatIconModule} from "@angular/material/icon";
 import {EternalsProgressionComponent} from "../eternals-progression/eternals-progression.component";
 import {MatTabsModule} from "@angular/material/tabs";
 import {EternalSeriesTableComponent} from "../eternals-progression/eternal-series-table/eternal-series-table.component";
+import {CompletionViewComponent} from "../challenge-overview/challenge-view/completion-view/completion-view.component";
+import {
+  ChampionSpecificComponent
+} from "../challenge-overview/challenge-view/champion-specific/champion-specific.component";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {SkinSpecificComponent} from "../challenge-overview/challenge-view/skin-specific/skin-specific.component";
+import {ItemSpecificComponent} from "../challenge-overview/challenge-view/item-specific/item-specific.component";
 
 @NgModule({
   declarations: [
@@ -34,24 +41,29 @@ import {EternalSeriesTableComponent} from "../eternals-progression/eternal-serie
     ChallengeViewComponent,
     ChallengeAutoChecklistComponent,
     EternalsProgressionComponent,
-    EternalSeriesTableComponent
+    EternalSeriesTableComponent,
+    CompletionViewComponent,
+    ChampionSpecificComponent,
+    SkinSpecificComponent,
+    ItemSpecificComponent
   ],
-    imports: [
-        CommonModule,
-        MaterialModule,
-        MatSortModule,
-        MatPaginatorModule,
-        NgIf,
-        NgForOf,
-        RouterModule,
-        MatTooltipModule,
-        MatSelectModule,
-        MatCheckboxModule,
-        ReactiveFormsModule,
-        MatListModule,
-        MatIconModule,
-        MatTabsModule,
-    ],
+  imports: [
+    CommonModule,
+    MaterialModule,
+    MatSortModule,
+    MatPaginatorModule,
+    NgIf,
+    NgForOf,
+    RouterModule,
+    MatTooltipModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    ReactiveFormsModule,
+    MatListModule,
+    MatIconModule,
+    MatTabsModule,
+    MatProgressBarModule,
+  ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: HttpBaseInterceptor, multi: true},
     ChallengeControllerService,

@@ -8,6 +8,11 @@ import {ChallengeViewComponent} from "./challenge-overview/challenge-view/challe
 import {RouteParameters} from "./route-parameters";
 import {ChallengeAutoChecklistComponent} from "./challenge-auto-checklist/challenge-auto-checklist.component";
 import {EternalsProgressionComponent} from "./eternals-progression/eternals-progression.component";
+import {
+  ChampionSpecificComponent
+} from "./challenge-overview/challenge-view/champion-specific/champion-specific.component";
+import {SkinSpecificComponent} from "./challenge-overview/challenge-view/skin-specific/skin-specific.component";
+import {ItemSpecificComponent} from "./challenge-overview/challenge-view/item-specific/item-specific.component";
 
 const routes: Routes = [
   {path: 'challenges', component: ChallengesOverviewComponent},
@@ -15,8 +20,9 @@ const routes: Routes = [
   {path: 'championsToChallenges', component: ChampionsChallengeCompletionComponent},
   {path: 'eternals', component: EternalsProgressionComponent},
   {path:`challenge-details/:${RouteParameters.challengeName}`,component:ChallengeViewComponent},
-  {path:`skin-challenge-details/:${RouteParameters.challengeName}`,component:ChallengeViewComponent},
-  {path:`champ-challenge-details/:${RouteParameters.challengeName}`,component:ChallengeViewComponent},
+  {path:`skin-challenge-details/:${RouteParameters.challengeName}`,component:SkinSpecificComponent},
+  {path:`champ-challenge-details/:${RouteParameters.challengeName}`,component:ChampionSpecificComponent},
+  {path:`item-challenge-details/:${RouteParameters.challengeName}`,component:ItemSpecificComponent},
   {path: "**", redirectTo: "challengeAutoCheckList"}
 ];
 

@@ -58,6 +58,86 @@
           }
         }
       },
+      "ChampionSkin": {
+        "type": "object",
+        "required": [
+          "squarePortraitJpg"
+        ],
+        "properties": {
+          "rarityGemPath": {
+            "type": "string"
+          },
+          "loadScreenPath": {
+            "type": "string"
+          },
+          "championId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "stillObtainable": {
+            "type": "boolean"
+          },
+          "tilePath": {
+            "type": "string"
+          },
+          "squarePortraitJpg": {
+            "type": "array",
+            "items": {
+              "format": "byte",
+              "type": "string"
+            }
+          },
+          "chromas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LolChampionsCollectionsChampionChroma"
+            }
+          },
+          "lastSelected": {
+            "type": "boolean"
+          },
+          "splashPath": {
+            "type": "string"
+          },
+          "uncenteredSplashPath": {
+            "type": "string"
+          },
+          "chromaPath": {
+            "type": "string"
+          },
+          "skinType": {
+            "type": "string"
+          },
+          "emblems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LolChampionsCollectionsChampionSkinEmblem"
+            }
+          },
+          "featuresText": {
+            "type": "string"
+          },
+          "ownership": {
+            "$ref": "#/components/schemas/LolChampionsCollectionsOwnership"
+          },
+          "name": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "isBase": {
+            "type": "boolean"
+          },
+          "splashVideoPath": {
+            "type": "string"
+          }
+        }
+      },
       "ChampionIdWithStatstones": {
         "type": "object",
         "required": [
@@ -89,6 +169,34 @@
             "type": "string"
           },
           "vertical": {
+            "type": "string"
+          }
+        }
+      },
+      "IngameItem": {
+        "type": "object",
+        "required": [
+          "iconPath",
+          "iconSquarePortrait",
+          "id",
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "iconSquarePortrait": {
+            "type": "array",
+            "items": {
+              "format": "byte",
+              "type": "string"
+            }
+          },
+          "iconPath": {
             "type": "string"
           }
         }
@@ -552,6 +660,7 @@
           "currentMilestoneCompletionPercentage",
           "currentValue",
           "description",
+          "hasOwnership",
           "milestone15CompletionPercentage",
           "milestone15Value",
           "milestone5CompletionPercentage",
@@ -587,6 +696,9 @@
           },
           "description": {
             "type": "string"
+          },
+          "hasOwnership": {
+            "type": "boolean"
           },
           "milestone5Value": {
             "format": "int32",
@@ -778,6 +890,29 @@
         ]
       }
     },
+    "/api/lcu-challenges/items": {
+      "get": {
+        "operationId": "getAllItems",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IngameItem"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "lcu-controller"
+        ]
+      }
+    },
     "/api/lcu-challenges/skins": {
       "get": {
         "operationId": "getAllSkins",
@@ -789,7 +924,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/LolChampionsCollectionsChampionSkin"
+                    "$ref": "#/components/schemas/ChampionSkin"
                   }
                 }
               }

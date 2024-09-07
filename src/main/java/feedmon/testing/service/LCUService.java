@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.stirante.lolclient.ClientApi;
 import feedmon.testing.domain.challenges.Challenge;
+import feedmon.testing.domain.inventory.ChampionSkin;
+import feedmon.testing.domain.inventory.IngameItem;
 import feedmon.testing.domain.inventory.champion.Champion;
 import feedmon.testing.domain.inventory.champion.ChampionIdWithStatstones;
 import feedmon.testing.domain.inventory.champion.ChampionWithLanes;
@@ -17,9 +19,7 @@ import feedmon.testing.domain.inventory.champion.statstones.ddragon.DDragonStats
 import feedmon.testing.domain.inventory.champion.statstones.ddragon.DDragonStatstonesMappings;
 import feedmon.testing.domain.inventory.champion.statstones.ddragon.StatstoneData;
 import feedmon.testing.usecases.dtos.SpecialChallengesDto;
-import generated.LolChampionsCollectionsChampionSkin;
-import generated.LolSummonerSummoner;
-import generated.UriMap;
+import generated.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
@@ -46,7 +46,7 @@ public class LCUService {
 
     private List<Challenge> challenges;
     private List<Champion> champions;
-    private List<LolChampionsCollectionsChampionSkin> skins;
+    private List<ChampionSkin> skins;
     private List<ChampionIdWithStatstones> championIdWithStatstones;
 
     public LCUService() {
@@ -80,6 +80,7 @@ public class LCUService {
         getChallenges(true);
         getChampions();
         getStatstoneProgress(true);
+        getAllSkins();
     }
 
     public void stopConnection() {
@@ -91,7 +92,10 @@ public class LCUService {
     }
 
     public List<Challenge> getProgressableChampionSpecificChallenges() {
-        return challenges.stream().filter(challenge -> !challenge.getCompletedIds().isEmpty()).filter(challenge -> challenge.getIdListType().equals(CHAMPION.name())).toList();
+        return challenges.stream()
+                .filter(challenge -> !challenge.isRetired())
+                .filter(challenge -> challenge.getIdListType().equals(CHAMPION.name()))
+                .toList();
     }
 
     public LolChampionsCollectionsChampionSkin getSkinForId(Integer id) {
@@ -108,7 +112,7 @@ public class LCUService {
 
     public List<SpecialChallengesDto> getChampSpecificChallenges() {
         List<Champion> champions = getChampions();
-        List<LolChampionsCollectionsChampionSkin> skins = getAllSkins();
+        List<ChampionSkin> skins = getAllSkins();
 
         List<Challenge> challenges = getChallenges(false).stream().filter(challenge -> !challenge.getCompletedIds().isEmpty()).filter(challenge -> !challenge.getIdListType().equals(ITEM.name())).toList();
 
@@ -122,8 +126,7 @@ public class LCUService {
 
         String champsJson = executeRequest("/lol-champions/v1/inventories/" + loggedInSummoner.summonerId + "/champions");
 
-       // ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        CollectionType type = TypeFactory.defaultInstance().constructCollectionType(List.class, Champion.class);
+        CollectionType type = objectMapper.getTypeFactory().constructCollectionType(List.class, Champion.class);
         try {
             List<Champion> championsMapped = objectMapper.readValue(champsJson, type);
             championsMapped.sort(Comparator.comparing(champion -> champion.name));
@@ -176,18 +179,36 @@ public class LCUService {
         return this.loggedInSummoner!= null && clientApi.isConnected();
     }
 
-    public synchronized List<LolChampionsCollectionsChampionSkin> getAllSkins() {
+    public synchronized List<ChampionSkin> getAllSkins() {
         if (skins != null) {
             return skins;
         }
 
-        List<LolChampionsCollectionsChampionSkin> skinsMapped = executeWithExceptionWrapper(() -> Arrays.stream(clientApi.executeGet("/lol-champions/v1/inventories/" + loggedInSummoner.summonerId + "/skins-minimal", LolChampionsCollectionsChampionSkin[].class)).toList());
-        skins = skinsMapped.stream().filter(skin -> skin.id >= 0).toList();
+        List<ChampionSkin> skinsMapped = executeWithExceptionWrapper(() -> Arrays.stream(clientApi.executeGet("/lol-champions/v1/inventories/" + loggedInSummoner.summonerId + "/skins-minimal", ChampionSkin[].class)).toList());
+        skins = skinsMapped.stream().filter(skin -> skin.id >= 0).map(this::addSquarePortrait).toList();
         return skins;
+    }
+
+    private ChampionSkin addSquarePortrait(ChampionSkin skin) {
+        skin.squarePortraitJpg = executeByteRequest(skin.tilePath);
+        return skin;
     }
 
     private void getSkinsForChampionId(Integer id) {
         executeWithExceptionWrapper(() -> clientApi.executeGet("/lol-champions/v1/inventories/" + loggedInSummoner.summonerId + "/champions/" + id + "/skins", LolChampionsCollectionsChampionSkin[].class));
+    }
+
+    public synchronized List<IngameItem> getAllItems() {
+        HttpRequest request = buildGetRequestForUrl("https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/items.json");
+        JavaType javaType = objectMapper.getTypeFactory().constructCollectionType(List.class, IngameItem.class);
+        List<IngameItem> itemsMap = sendRequestForJavaType(request, javaType);
+
+        return itemsMap.stream().map(this::mapSquarePortraitOntoItem).toList();
+    }
+
+    private IngameItem mapSquarePortraitOntoItem(IngameItem item) {
+        item.iconSquarePortrait = executeByteRequest(item.iconPath);
+        return item;
     }
 
     public synchronized List<ChampionIdWithStatstones> getStatstoneProgress(boolean reload) {
@@ -228,6 +249,7 @@ public class LCUService {
         return championIdWithStatstones;
     }
 
+    // todo maybe refactor so that ownership is on the seriesmapping and not on each statstone of the series
     private ChampionIdWithStatstones enterAndCalculateStatstoneDataForChampionIdWithStatstones(ChampionIdWithStatstones champWithStatstones) {
         Statstones[] statstones = getStatStonesForChampionId(champWithStatstones.championId);
         for (Statstones statstone : statstones) {
