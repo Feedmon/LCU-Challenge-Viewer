@@ -4,12 +4,15 @@ was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by
 
 > Simple tool to see the advancement of LoL challenges.
 
+> sortable by clicking on table header
 ![challenge-view.PNG](all-challenges-overview.png)
 
 ![challenge-view.PNG](challenge-view.png)
 
+> configurable with different challenges to be visualized
 ![champion-view.PNG](champion-view.png)
 
+> milestone progression is sortable by clicking on header
 ![eternals-view.PNG](eternals-view.png)
 
 # How to use since v1.2.0
