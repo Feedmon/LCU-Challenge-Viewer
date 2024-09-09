@@ -9,6 +9,7 @@ import {
 import {Challenge} from "../../backend-api/api/models/challenge";
 import {Router} from "@angular/router";
 import {ChallengeControllerService} from "../services/challenge-controller.service";
+import {LocalStorageService} from "../services/local-storage.service";
 
 export interface ChampionWithEternalSeries extends Champion, SeriesStatstonesWithCompletionValues {}
 
@@ -25,9 +26,11 @@ export class EternalsProgressionComponent implements OnInit {
   options: Challenge[];
 
   private champions: Champion[];
+  private selectedEternalChallengesStorageKey = "eternalChallengesStorageKey";
 
   constructor(private challengeService: ChallengeService,
               private challengeControllerService: ChallengeControllerService,
+              private localStorageService: LocalStorageService,
               private router: Router) {
   }
 
@@ -102,9 +105,23 @@ export class EternalsProgressionComponent implements OnInit {
       this.champions = championsResp;
       this.challenges = challengesResp.filter(chall => chall.description.includes("Eternal") && !chall.name.includes("Mile") && !chall.name.includes("Old Friends"));
       this.options = this.challenges;
+      this.loadSelectedChallenges(this.challenges);
+
+      this.selectedOptions.valueChanges.subscribe(value => {
+        if(value){
+          this.localStorageService.setList(this.selectedEternalChallengesStorageKey, value.map(chall => chall.id))
+        }
+      })
     }).catch(error => {
       console.error("Error while loading data:", error);
     });
+  }
+
+  private loadSelectedChallenges(challenges: Challenge[]): void {
+    const selectedChallengeIds: number[] | null = this.localStorageService.getList(this.selectedEternalChallengesStorageKey);
+    if(selectedChallengeIds){
+      this.selectedOptions.setValue(challenges.filter(chall => selectedChallengeIds.includes(chall.id)))
+    }
   }
 
   private reloadEternals(): void {

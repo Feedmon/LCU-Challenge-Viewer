@@ -5,6 +5,7 @@ import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {FormControl} from "@angular/forms";
 import {ChallengeService, clientChampionSearchBehaviour} from "../services/challenge.service";
+import {LocalStorageService} from "../services/local-storage.service";
 
 interface ChampData {
     imageUrl: string;
@@ -21,16 +22,20 @@ interface ChampData {
 export class ChampionsChallengeCompletionComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-    challenges: SpecialChallengesDto[];
-    champions: Champion[];
-    displayedColumns = ['champion'];
-    dataSource = new MatTableDataSource<ChampData>();
+  challenges: SpecialChallengesDto[];
+  champions: Champion[];
+  displayedColumns = ['champion'];
+  dataSource = new MatTableDataSource<ChampData>();
 
   options: string[];
-  selectedOptions= new FormControl<string[]>(['Perfectionist', 'Jack of All Champs', 'Champion Ocean', 'Adapt to All Situations']);
+  selectedOptions= new FormControl<string[]>([]);
   tableFilter = new FormControl<string>("");
 
-  constructor(private challengeService: ChallengeService) {
+  private selectedColumnsStorageKey = "challengeCompletionChallengesKey";
+  private standardSelection = ['Perfectionist', 'Jack of All Champs', 'Champion Ocean', 'Adapt to All Situations'];
+
+  constructor(private challengeService: ChallengeService,
+              private localStorageService: LocalStorageService) {
   }
 
   updateColumns(selectedColumns: string[]) {
@@ -38,9 +43,9 @@ export class ChampionsChallengeCompletionComponent implements OnInit {
 
     this.dataSource.data = this.champions.map(champ => {
             return {
-              imageUrl: champ.squarePortraitPath ??"",
+              imageUrl: champ.squarePortraitPath,
               image: champ.squarePortraitJpg,
-              name: champ.name ??"",
+              name: champ.name,
               id: champ.id ?? -1
             }
     });
@@ -59,6 +64,9 @@ export class ChampionsChallengeCompletionComponent implements OnInit {
      })
 
      this.challengeService.getChampions().then(res => this.champions = res);
+
+     const selectedColumns: string[] = this.localStorageService.getList(this.selectedColumnsStorageKey) ?? this.standardSelection;
+     this.selectedOptions.patchValue(selectedColumns)
      this.updateTable();
      this.challengeService.champSpecificChallengesNotify$.subscribe(() => {
         this.updateTable();
@@ -79,11 +87,20 @@ export class ChampionsChallengeCompletionComponent implements OnInit {
   selectOpenedOrClosed(isOpened: boolean): void {
      if(!isOpened){
        this.updateColumns(this.selectedOptions.value ?? []);
+       this.updateLocalStorageSelectedColumns();
      }
   }
 
   getDescriptionForChallengeName(challengeName: string): string{
    return this.challenges!.find(chall => chall.challengeName === challengeName)!.challengeDescription;
+  }
+
+  private updateLocalStorageSelectedColumns(): void {
+    if(this.selectedOptions.value){
+      this.localStorageService.setList(this.selectedColumnsStorageKey, this.selectedOptions.value);
+    } else {
+      this.localStorageService.removeItem(this.selectedColumnsStorageKey);
+    }
   }
 
   private updateTable(): void{

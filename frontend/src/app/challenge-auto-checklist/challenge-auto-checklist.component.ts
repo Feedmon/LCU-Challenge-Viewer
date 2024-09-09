@@ -4,6 +4,7 @@ import {Challenge} from "../../backend-api/api/models/challenge";
 import {ChallengeService, clientChampionSearchBehaviour} from "../services/challenge.service";
 import {Champion} from "../../backend-api/api/models/champion";
 import {FormControl} from "@angular/forms";
+import {LocalStorageService} from "../services/local-storage.service";
 
 interface ChampChallengeData extends Champion {
   availableForChallenge: boolean;
@@ -29,8 +30,11 @@ export class ChallengeAutoChecklistComponent implements OnInit{
 
   selectedChallenge: FormControl<Challenge | null> = new FormControl<Challenge | null>(null);
 
+  private autoChecklistSavedChallengeIdKey = "autoCheckListChallengeId";
+
   constructor(private challengeControllerService: ChallengeControllerService,
-              private challengeService: ChallengeService) {
+              private challengeService: ChallengeService,
+              private localStorageService: LocalStorageService) {
   }
 
   ngOnInit() :void {
@@ -76,6 +80,7 @@ export class ChallengeAutoChecklistComponent implements OnInit{
   private subscribeToChallengeChange(): void {
     this.selectedChallenge.valueChanges.subscribe(challenge => {
       if(challenge && this.champions){
+        this.localStorageService.setNumber(this.autoChecklistSavedChallengeIdKey, challenge.id);
         this.setupChampionChallengeData(this.champions);
 
         this.championsChallengeData.forEach(champ => {
@@ -93,8 +98,16 @@ export class ChallengeAutoChecklistComponent implements OnInit{
       .then(response=> {
         this.challenges = response;
         this.subscribeToChallengeChange();
-        this.selectedChallenge.patchValue(this.challenges[2]);
+        this.selectedChallenge.patchValue(this.getChallengeToInitialize());
       });
+  }
+
+  private getChallengeToInitialize(): Challenge {
+    const challengeId = this.localStorageService.getNumber(this.autoChecklistSavedChallengeIdKey);
+    if(challengeId) {
+      return this.challenges.find(chall => chall.id === challengeId) ?? this.challenges[2];
+    }
+    return this.challenges[2];
   }
 
   private setupChampionChallengeData(champion: Champion[]): void {

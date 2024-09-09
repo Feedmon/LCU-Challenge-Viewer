@@ -12,7 +12,8 @@ export class HttpBaseInterceptor implements HttpInterceptor {
     }
 
     const decoratedRequest: HttpRequest<any> = req.clone({
-      url: `./api/${url}`
+      url: `http://localhost:8080/api/${url}`
+      // url: `./api/${url}` to make it work in dev environment or properly implement proxy conf or change electron or configure cors
     })
 
     return next.handle(decoratedRequest)

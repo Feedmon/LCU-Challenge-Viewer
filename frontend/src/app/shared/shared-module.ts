@@ -32,6 +32,7 @@ import {
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {SkinSpecificComponent} from "../challenge-overview/challenge-view/skin-specific/skin-specific.component";
 import {ItemSpecificComponent} from "../challenge-overview/challenge-view/item-specific/item-specific.component";
+import {LocalStorageService} from "../services/local-storage.service";
 
 @NgModule({
   declarations: [
@@ -69,6 +70,7 @@ import {ItemSpecificComponent} from "../challenge-overview/challenge-view/item-s
     ChallengeControllerService,
     ChallengeService,
     OpenMaterialDialogService,
+    LocalStorageService,
   ],
   exports: [
     ChallengesOverviewComponent,

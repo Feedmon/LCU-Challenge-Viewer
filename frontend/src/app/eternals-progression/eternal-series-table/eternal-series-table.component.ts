@@ -28,7 +28,7 @@ export class EternalSeriesTableComponent implements OnInit, OnChanges, AfterView
   dataSource = new MatTableDataSource<ChampionWithEternalSeries>();
 
   ngOnInit(): void {
-    this.dataSource.data = this.championWithEternalSeries;
+    this.assignAndFilterDataToTable();
     this.dataSource.filterPredicate = filterOverride
   }
 
@@ -37,19 +37,7 @@ export class EternalSeriesTableComponent implements OnInit, OnChanges, AfterView
       this.dataSource.filter = changes.tableFilter.currentValue
     }
     if(changes.challengeFilter){
-      if(this.challengeFilter && this.challengeFilter.length > 0){
-        let availableChampIds: number[] = this.championWithEternalSeries.map(champ=> champ.id);
-        for (let challenge of this.challengeFilter) {
-          if( challenge.name.includes( "Rekindle the Old Furnace") || challenge.name.includes("Well-Rounded Traveller")){
-            availableChampIds =  availableChampIds.filter(id => !challenge.completedIds.includes(id));
-          } else {
-            availableChampIds = availableChampIds.filter(id => challenge.availableIds.includes(id) && !challenge.completedIds.includes(id))
-          }
-        }
-        this.dataSource.data = this.championWithEternalSeries.filter(champ => availableChampIds.includes(champ.id));
-      }else {
-        this.dataSource.data = this.championWithEternalSeries;
-      }
+      this.assignAndFilterDataToTable();
     }
   }
 
@@ -63,6 +51,22 @@ export class EternalSeriesTableComponent implements OnInit, OnChanges, AfterView
 
   getToolTipForMileStoneProgress(statstone: SeriesStatstone): string {
     return "Milestone " + statstone.currentMilestone + " | " + statstone.currentMilestoneCompletionPercentage + "% towards  Milestone " + (statstone.currentMilestone + 1);
+  }
+
+  private assignAndFilterDataToTable(): void {
+    if(this.challengeFilter && this.challengeFilter.length > 0){
+      let availableChampIds: number[] = this.championWithEternalSeries.map(champ=> champ.id);
+      for (let challenge of this.challengeFilter) {
+        if( challenge.name.includes( "Rekindle the Old Furnace") || challenge.name.includes("Well-Rounded Traveller")){
+          availableChampIds =  availableChampIds.filter(id => !challenge.completedIds.includes(id));
+        } else {
+          availableChampIds = availableChampIds.filter(id => challenge.availableIds.includes(id) && !challenge.completedIds.includes(id))
+        }
+      }
+      this.dataSource.data = this.championWithEternalSeries.filter(champ => availableChampIds.includes(champ.id));
+    }else {
+      this.dataSource.data = this.championWithEternalSeries;
+    }
   }
 }
 
