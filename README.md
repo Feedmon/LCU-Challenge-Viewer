@@ -18,7 +18,7 @@ was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by
 # How to use since v1.2.0
 * open exe and let installer run
 * app wil open immediately after installation
-* standard installation folder is C:\user\(your user)\AppData\Local\Programs\lcu-challenge-viewer
+* standard installation folder is C:\users\ (your user)\AppData\Local\Programs\lcu-challenge-viewer
 * league client can be opened and closed whenever, some function may not work with a closed client.
 
 
