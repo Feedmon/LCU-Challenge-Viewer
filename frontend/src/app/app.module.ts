@@ -9,11 +9,12 @@ import {MatIconRegistry} from "@angular/material/icon";
 import {SharedModule} from "./shared/shared-module";
 import {OpenMaterialDialogService} from "./shared/open-material-dialog.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RouteParameters} from "./route-parameters";
 import {ToolbarComponent} from "./toolbar/toolbar.component";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 @NgModule({
   declarations: [
@@ -21,17 +22,19 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
     SidebarComponent,
     ToolbarComponent,
   ],
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule, // NoopAnimationsModule for no animations
-        AppRoutingModule,
-        HttpClientModule,
-        MaterialModule,
-        SharedModule,
-        FormsModule,
-        MatToolbarModule,
-        MatProgressBarModule,
-    ],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule, // NoopAnimationsModule for no animations
+    AppRoutingModule,
+    HttpClientModule,
+    MaterialModule,
+    SharedModule,
+    FormsModule,
+    MatToolbarModule,
+    MatProgressBarModule,
+    MatCheckboxModule,
+    ReactiveFormsModule,
+  ],
   providers: [
     OpenMaterialDialogService,
     RouteParameters

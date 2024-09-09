@@ -579,6 +579,7 @@
           "completedNames",
           "completionAmount",
           "completionAmountForMaster",
+          "currentLevel",
           "id",
           "notCompletedIds",
           "notCompletedNames"
@@ -599,12 +600,18 @@
           "challengeType": {
             "type": "string"
           },
+          "nextLevel": {
+            "type": "string"
+          },
           "challengeDescription": {
             "type": "string"
           },
           "completionAmountForMaster": {
             "format": "int32",
             "type": "integer"
+          },
+          "currentLevel": {
+            "$ref": "#/components/schemas/Leagues"
           },
           "challengeLeague": {
             "type": "string"

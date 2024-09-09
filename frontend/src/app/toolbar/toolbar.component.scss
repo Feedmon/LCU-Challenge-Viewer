@@ -42,3 +42,8 @@ mat-progress-bar {
   width: 100%;
   z-index: 2000;
 }
+
+::ng-deep .mat-checkbox-checked .mat-checkbox-background {
+  background-color: blue !important;
+  border-color: blue !important;
+}

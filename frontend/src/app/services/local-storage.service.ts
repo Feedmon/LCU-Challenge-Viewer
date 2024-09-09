@@ -12,6 +12,15 @@ export class LocalStorageService {
     return value ? parseFloat(value) : null;
   }
 
+  setBoolean(key: string, value: boolean): void {
+    localStorage.setItem(key, value.toString());
+  }
+
+  getBoolean(key: string): boolean  {
+    const value = localStorage.getItem(key);
+    return value !== null ? value === 'true' : false;
+  }
+
   setList<T>(key: string, value: T[]): void {
     localStorage.setItem(key, JSON.stringify(value));
   }

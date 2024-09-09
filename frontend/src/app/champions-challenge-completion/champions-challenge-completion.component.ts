@@ -39,7 +39,7 @@ export class ChampionsChallengeCompletionComponent implements OnInit {
   }
 
   updateColumns(selectedColumns: string[]) {
-    this.displayedColumns = ['champion', ...selectedColumns];
+    this.displayedColumns = ['champion', ...selectedColumns.filter(col => this.options.includes(col))];
 
     this.dataSource.data = this.champions.map(champ => {
             return {

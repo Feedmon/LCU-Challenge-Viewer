@@ -1,15 +1,19 @@
-import {AfterViewInit, Component, Input, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChange, ViewChild} from "@angular/core";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatSort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
 import {Challenge} from "../../../backend-api/api/models/challenge";
 import {FormControl} from "@angular/forms";
 
+interface ChallengeTableChanges {
+  challenges?: SimpleChange;
+}
+
 @Component({
   selector: 'app-challenge-overview-table',
   templateUrl: 'challenge-table-overview.component.html'
 })
-export class ChallengeTableOverviewComponent implements OnInit, AfterViewInit {
+export class ChallengeTableOverviewComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() challenges: Challenge[]
 
   // if wanted to  be case-insensitive use sortingDataAccessor https://github.com/angular/components/issues/9205
@@ -33,6 +37,12 @@ export class ChallengeTableOverviewComponent implements OnInit, AfterViewInit {
         this.dataSource.filter = "";
       }
     })
+  }
+
+  ngOnChanges(changes: ChallengeTableChanges): void {
+    if(changes.challenges){
+      this.dataSource.data = changes.challenges.currentValue
+    }
   }
 
   ngAfterViewInit(): void {

@@ -35,6 +35,9 @@ public class SpecialChallengesDto {
     @NotNull
     private final String challengeLeague;
     @NotNull
+    private final Leagues currentLevel;
+    private final String nextLevel;
+    @NotNull
     private final Integer completionAmount;
     @NotNull
     private final Integer completionAmountForMaster;
@@ -55,6 +58,8 @@ public class SpecialChallengesDto {
         this.completedIds = challenge.getCompletedIds();
         this.completedNames = completedIds.stream().map(id -> getName(id, allSkins, champions)).toList();
         this.challengeLeague = challenge.getCurrentLevel().getName();
+        this.currentLevel = challenge.getCurrentLevel();
+        this.nextLevel = challenge.getNextLevel();
         this.completionAmount = 0;//Integer.valueOf(Double.toString(challenge.getCurrentThreshold()));
         this.completionAmountForMaster = getCompletionAmountForMasterOrNull(challenge);
         this.isRetired = challenge.isRetired();
@@ -142,6 +147,14 @@ public class SpecialChallengesDto {
 
     public List<Integer> getNotCompletedIds() {
         return notCompletedIds;
+    }
+
+    public Leagues getCurrentLevel() {
+        return currentLevel;
+    }
+
+    public String getNextLevel() {
+        return nextLevel;
     }
 
     public List<String> getNotCompletedNames() {

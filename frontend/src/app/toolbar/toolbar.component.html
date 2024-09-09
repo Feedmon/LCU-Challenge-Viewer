@@ -6,6 +6,10 @@
     <button mat-button (click)="reloadEternals()">reload eternal data</button>
   </div>
 
+  <div class="hide-completed-challenges">
+    <mat-checkbox [formControl]="hideCompletedControl">hide completed Challenges</mat-checkbox>
+  </div>
+
   <div class="backend-status">
     Java-Service:
     <span [ngClass]="backendService">{{ backendService == "error" ? 'failed to start' : backendService }}</span>
@@ -24,4 +28,3 @@
   </div>
 </div>
 <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
-

@@ -74,7 +74,7 @@ export class ChallengeAutoChecklistComponent implements OnInit{
       this.filterChamps()
     })
 
-    this.challengeService.challengesNotify$.subscribe(()=> this.loadChallengeData())
+    this.challengeService.challengesNotify$.subscribe(()=> this.loadChallengeData());
   }
 
   private subscribeToChallengeChange(): void {
@@ -94,7 +94,7 @@ export class ChallengeAutoChecklistComponent implements OnInit{
   }
 
   private initializeChallengeData(): void {
-    this.challengeControllerService.getProgressableChampionChallenges()
+    this.challengeService.getProgressableChampionChallenges()
       .then(response=> {
         this.challenges = response;
         this.subscribeToChallengeChange();
@@ -117,10 +117,10 @@ export class ChallengeAutoChecklistComponent implements OnInit{
   }
 
   private loadChallengeData(): void {
-    this.challengeControllerService.getProgressableChampionChallenges()
+    this.challengeService.getProgressableChampionChallenges()
       .then(response=> {
         this.challenges = response;
-        const selectedChallenge = this.challenges.find(chall => chall.id === this.selectedChallenge.value?.id) ?? null;
+        const selectedChallenge = this.challenges.find(chall => chall.id === this.selectedChallenge.value?.id) ?? this.challenges[0];
         this.selectedChallenge.patchValue(selectedChallenge);
         this.filterChamps();
       });

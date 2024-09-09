@@ -1,6 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {ChallengeService} from "../services/challenge.service";
 import {ChallengeControllerService} from "../services/challenge-controller.service";
+import {FormControl} from "@angular/forms";
 
 export enum BackendStatus {
   STARTING= "starting",
@@ -19,6 +20,7 @@ export class ToolbarComponent implements OnInit {
   backendService: BackendStatus = BackendStatus.STARTING;
   connected = false;
   loading = false;
+  hideCompletedControl = new FormControl<boolean>(false);
 
   constructor(private challengeService: ChallengeService,
               private challengeControllerService: ChallengeControllerService) {
@@ -26,6 +28,16 @@ export class ToolbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading = true;
+
+    this.hideCompletedControl.setValue(this.challengeService.getHideCompletedChallenges())
+
+    this.hideCompletedControl.valueChanges.subscribe(value => {
+      if(value){
+        this.challengeService.setHideCompletedChallenges(true);
+      } else {
+        this.challengeService.setHideCompletedChallenges(false);
+      }
+    })
 
     this.challengeControllerService.waitForBackendStart().subscribe({
       next: res => {

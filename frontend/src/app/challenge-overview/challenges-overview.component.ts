@@ -12,7 +12,7 @@ export class ChallengesOverviewComponent implements OnInit {
   connected: boolean;
   challenges: Challenge[];
 
-  constructor(private challengerService: ChallengeService,
+  constructor(private challengeService: ChallengeService,
               private challengeControllerService: ChallengeControllerService) {
   }
 
@@ -23,10 +23,12 @@ export class ChallengesOverviewComponent implements OnInit {
       }
       this.connected = resp;
     });
+
+    this.challengeService.challengesNotify$.subscribe(()=> this.getChallenges());
   }
 
   getChallenges(): void {
-    this.challengerService.getChallenges().then(response => {
+    this.challengeService.getChallenges().then(response => {
       this.challenges = response;
     });
   }

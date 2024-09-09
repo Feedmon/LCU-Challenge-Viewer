@@ -9,6 +9,7 @@ import {
   Leagues
 } from "src/backend-api/api/models";
 import {Subject} from "rxjs";
+import {LocalStorageService} from "./local-storage.service";
 
 @Injectable()
 export class ChallengeService {
@@ -21,6 +22,8 @@ export class ChallengeService {
   private champions: Champion[] = [];
   private skins: ChampionSkin[] = [];
   private eternals: ChampionIdWithStatstones[] = [];
+  private hideCompletedChallenges: boolean;
+  private hideCompletedChallengesLocalStorageKey = "hideCompletedChallengesKey";
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   champSpecificChallengesNotify$ = this.champSpecificChallengesNotifySubject.asObservable();
@@ -29,7 +32,10 @@ export class ChallengeService {
   // eslint-disable-next-line @typescript-eslint/member-ordering
   eternalsNotify$ = this.eternalsNotifySubject.asObservable();
 
-  constructor(private challengeControllerService: ChallengeControllerService) {
+  constructor(private challengeControllerService: ChallengeControllerService,
+              private localStorageService: LocalStorageService) {
+    this.hideCompletedChallenges = this.localStorageService.getBoolean(this.hideCompletedChallengesLocalStorageKey);
+
     this.challengeControllerService.waitForClientConnection().subscribe({
       next: res => {
         if(res) {
@@ -45,8 +51,20 @@ export class ChallengeService {
     });
   }
 
+  getHideCompletedChallenges(): boolean {
+    return this.hideCompletedChallenges;
+  }
+
+  setHideCompletedChallenges(hide: boolean): void {
+    this.hideCompletedChallenges = hide;
+    this.localStorageService.setBoolean(this.hideCompletedChallengesLocalStorageKey, hide);
+    this.notifyChallenges();
+    this.notifyChampSpecificChallenges();
+    this.notifyEternals();
+  }
+
   idAvailableForChallenge(id: number, challenge: Challenge): boolean {
-    if(challenge.availableIds.length === 0 && !this.isChallengeCompleted(challenge)){
+    if(challenge.availableIds.length === 0 && !this.isChallengeCompleted(challenge.currentLevel, challenge.nextLevel)){
       return true;
     }
     return challenge.availableIds.includes(id) || challenge.completedIds.includes(id);
@@ -76,24 +94,29 @@ export class ChallengeService {
 
    getChampSpecificChallenges(): Promise<SpecialChallengesDto[]> {
     if(this.champSpecificChallenges.length !== 0){
-      return Promise.resolve( this.champSpecificChallenges);
+      return Promise.resolve(this.filterChampSpecificChallenges(this.champSpecificChallenges));
     }
 
     return this.challengeControllerService.getChampSpecificChallenges().then(response => {
       this.champSpecificChallenges = response;
-      return response;
+      return this.filterChampSpecificChallenges(response);
     });
+  }
+
+  getProgressableChampionChallenges(): Promise<Challenge[]>{
+    return this.challengeControllerService.getProgressableChampionChallenges().then(challenges => this.filterChallenges(challenges));
   }
 
   getChallenges(): Promise<Challenge[]> {
     if(this.challenges.length !== 0){
-      return Promise.resolve( this.challenges);
+      return Promise.resolve(this.filterChallenges(this.challenges));
     }
 
     return this.challengeControllerService.getChallenges().then(response => {
       this.challenges = response;
       this.notifyChampSpecificChallenges();
-      return response;
+      this.notifyChallenges();
+      return this.filterChallenges(response);
     });
   }
 
@@ -112,6 +135,7 @@ export class ChallengeService {
     return this.challengeControllerService.reloadChallenges().then(challenges => {
       this.challenges = challenges;
       this.notifyChallenges();
+      this.notifyChampSpecificChallenges();
       this.champSpecificChallenges = [];
       return this.getChampSpecificChallenges()
     })
@@ -137,8 +161,22 @@ export class ChallengeService {
     this.eternalsNotifySubject.next();
   }
 
-  private isChallengeCompleted(challenge: Challenge): boolean {
-    return challenge.currentLevel === Leagues.Master || challenge.currentLevel === Leagues.Grandmaster || challenge.currentLevel === Leagues.Challenger;
+  private filterChallenges(challenges: Challenge[]): Challenge[] {
+    if(this.hideCompletedChallenges){
+      return challenges.filter(chall => !this.isChallengeCompleted(chall.currentLevel, chall.nextLevel));
+    }
+    return challenges;
+  }
+
+ private filterChampSpecificChallenges(challenges: SpecialChallengesDto[]): SpecialChallengesDto[] {
+    if(this.hideCompletedChallenges){
+      return challenges.filter(chall => !this.isChallengeCompleted(chall.currentLevel, chall.nextLevel));
+    }
+    return challenges;
+  }
+
+  private isChallengeCompleted(currentLevel: Leagues, nextLevel: string | undefined): boolean {
+    return currentLevel === Leagues.Master || currentLevel === Leagues.Grandmaster || currentLevel === Leagues.Challenger || !nextLevel;
   }
 }
 
