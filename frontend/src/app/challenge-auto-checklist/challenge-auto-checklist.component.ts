@@ -1,10 +1,11 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {ChallengeControllerService} from "../services/challenge-controller.service";
 import {Challenge} from "../../backend-api/api/models/challenge";
 import {ChallengeService, clientChampionSearchBehaviour} from "../services/challenge.service";
 import {Champion} from "../../backend-api/api/models/champion";
 import {FormControl} from "@angular/forms";
 import {LocalStorageService} from "../services/local-storage.service";
+import {Subscription} from "rxjs";
 
 interface ChampChallengeData extends Champion {
   availableForChallenge: boolean;
@@ -17,7 +18,7 @@ interface ChampChallengeData extends Champion {
   templateUrl: 'challenge-auto-checklist.component.html',
   styleUrls: ['./challenge-auto-checklist.component.scss']
 })
-export class ChallengeAutoChecklistComponent implements OnInit{
+export class ChallengeAutoChecklistComponent implements OnInit, OnDestroy {
 
   challenges: Challenge[];
   champions: Champion[];
@@ -31,6 +32,7 @@ export class ChallengeAutoChecklistComponent implements OnInit{
   selectedChallenge: FormControl<Challenge | null> = new FormControl<Challenge | null>(null);
 
   private autoChecklistSavedChallengeIdKey = "autoCheckListChallengeId";
+  private subscription: Subscription = new Subscription();
 
   constructor(private challengeControllerService: ChallengeControllerService,
               private challengeService: ChallengeService,
@@ -38,7 +40,7 @@ export class ChallengeAutoChecklistComponent implements OnInit{
   }
 
   ngOnInit() :void {
-    this.challengeControllerService.waitForClientConnection().subscribe({
+    this.subscription.add(this.challengeControllerService.waitForClientConnection().subscribe({
       next: res => {
         if(res) {
           this.initializeComponent();
@@ -47,7 +49,11 @@ export class ChallengeAutoChecklistComponent implements OnInit{
       error: (err) => {
         console.error('Error while waiting for backend connection:', err);
       }
-    });
+    }));
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   visibilityChanged():void {
@@ -70,15 +76,15 @@ export class ChallengeAutoChecklistComponent implements OnInit{
       this.initializeChallengeData();
     });
 
-    this.championSearch.valueChanges.subscribe(() => {
+    this.subscription.add(this.championSearch.valueChanges.subscribe(() => {
       this.filterChamps()
-    })
+    }));
 
-    this.challengeService.challengesNotify$.subscribe(()=> this.loadChallengeData());
+    this.subscription.add(this.challengeService.challengesNotify$.subscribe(()=> this.loadChallengeData()));
   }
 
   private subscribeToChallengeChange(): void {
-    this.selectedChallenge.valueChanges.subscribe(challenge => {
+    this.subscription.add(this.selectedChallenge.valueChanges.subscribe(challenge => {
       if(challenge && this.champions){
         this.localStorageService.setNumber(this.autoChecklistSavedChallengeIdKey, challenge.id);
         this.setupChampionChallengeData(this.champions);
@@ -90,7 +96,7 @@ export class ChallengeAutoChecklistComponent implements OnInit{
         })
         this.filterChamps();
       }
-    })
+    }));
   }
 
   private initializeChallengeData(): void {

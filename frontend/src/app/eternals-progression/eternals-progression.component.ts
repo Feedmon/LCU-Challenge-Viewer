@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {ChallengeService} from "../services/challenge.service";
 import {ChampionIdWithStatstones} from "../../backend-api/api/models/champion-id-with-statstones";
 import {Champion} from "../../backend-api/api/models/champion";
@@ -10,6 +10,7 @@ import {Challenge} from "../../backend-api/api/models/challenge";
 import {Router} from "@angular/router";
 import {ChallengeControllerService} from "../services/challenge-controller.service";
 import {LocalStorageService} from "../services/local-storage.service";
+import {Subscription} from "rxjs";
 
 export interface ChampionWithEternalSeries extends Champion, SeriesStatstonesWithCompletionValues {}
 
@@ -18,12 +19,14 @@ export interface ChampionWithEternalSeries extends Champion, SeriesStatstonesWit
   templateUrl: 'eternals-progression.component.html',
   styleUrls: ['./eternals-progression.component.scss']
 })
-export class EternalsProgressionComponent implements OnInit {
+export class EternalsProgressionComponent implements OnInit, OnDestroy {
   eternals: ChampionIdWithStatstones[];
   challenges: Challenge[];
   tableFilter = new FormControl<string>("");
   selectedOptions= new FormControl<Challenge[]>([]);
   options: Challenge[];
+
+  private subscription: Subscription = new Subscription();
 
   private champions: Champion[];
   private selectedEternalChallengesStorageKey = "eternalChallengesStorageKey";
@@ -35,7 +38,7 @@ export class EternalsProgressionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.challengeControllerService.waitForClientConnection().subscribe({
+    this.subscription.add(this.challengeControllerService.waitForClientConnection().subscribe({
       next: res => {
         if(res) {
           this.initializeData();
@@ -44,10 +47,14 @@ export class EternalsProgressionComponent implements OnInit {
       error: (err) => {
         console.error('Error while waiting for backend connection:', err);
       }
-    });
+    }));
 
 
-    this.challengeService.eternalsNotify$.subscribe(()=> this.reloadEternals())
+    this.subscription.add(this.challengeService.eternalsNotify$.subscribe(()=> this.reloadEternals()));
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   combineChampionsWithStarterSeries(): ChampionWithEternalSeries[] {

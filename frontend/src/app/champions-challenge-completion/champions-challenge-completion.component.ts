@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from "@angular/core";
+import {Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {SpecialChallengesDto} from "../../backend-api/api/models/special-challenges-dto";
 import {Champion} from "../../backend-api/api/models/champion";
 import {MatPaginator} from "@angular/material/paginator";
@@ -6,6 +6,7 @@ import {MatTableDataSource} from "@angular/material/table";
 import {FormControl} from "@angular/forms";
 import {ChallengeService, clientChampionSearchBehaviour} from "../services/challenge.service";
 import {LocalStorageService} from "../services/local-storage.service";
+import {Subscription} from "rxjs";
 
 interface ChampData {
     imageUrl: string;
@@ -19,7 +20,7 @@ interface ChampData {
   templateUrl: 'champions-challenge-completion.component.html',
   styleUrls: ['./champions-challenge-completion.component.scss']
 })
-export class ChampionsChallengeCompletionComponent implements OnInit {
+export class ChampionsChallengeCompletionComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   challenges: SpecialChallengesDto[];
@@ -33,6 +34,8 @@ export class ChampionsChallengeCompletionComponent implements OnInit {
 
   private selectedColumnsStorageKey = "challengeCompletionChallengesKey";
   private standardSelection = ['Perfectionist', 'Jack of All Champs', 'Champion Ocean', 'Adapt to All Situations'];
+
+  private subscription: Subscription = new Subscription();
 
   constructor(private challengeService: ChallengeService,
               private localStorageService: LocalStorageService) {
@@ -55,24 +58,27 @@ export class ChampionsChallengeCompletionComponent implements OnInit {
    ngOnInit(): void {
      this.dataSource.filterPredicate = filterOverride
 
-     this.tableFilter.valueChanges.subscribe(value =>{
+     this.subscription.add(this.tableFilter.valueChanges.subscribe(value =>{
        if(value) {
          this.dataSource.filter = value;
        }else {
          this.dataSource.filter = "";
        }
-     })
+     }));
 
      this.challengeService.getChampions().then(res => this.champions = res);
 
      const selectedColumns: string[] = this.localStorageService.getList(this.selectedColumnsStorageKey) ?? this.standardSelection;
      this.selectedOptions.patchValue(selectedColumns)
      this.updateTable();
-     this.challengeService.champSpecificChallengesNotify$.subscribe(() => {
+     this.subscription.add(this.challengeService.champSpecificChallengesNotify$.subscribe(() => {
         this.updateTable();
-     })
+     }));
     }
 
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
 
   getCellColorClass(champId: number, challengeName: string):string {
     if(this.challenges.find(s=> s.challengeName === challengeName)!.completedIds.includes(champId)){

@@ -1,9 +1,10 @@
-import {AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChange, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChange, ViewChild} from "@angular/core";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatSort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
 import {Challenge} from "../../../backend-api/api/models/challenge";
 import {FormControl} from "@angular/forms";
+import {Subscription} from "rxjs";
 
 interface ChallengeTableChanges {
   challenges?: SimpleChange;
@@ -13,7 +14,7 @@ interface ChallengeTableChanges {
   selector: 'app-challenge-overview-table',
   templateUrl: 'challenge-table-overview.component.html'
 })
-export class ChallengeTableOverviewComponent implements OnInit, OnChanges, AfterViewInit {
+export class ChallengeTableOverviewComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
   @Input() challenges: Challenge[]
 
   // if wanted to  be case-insensitive use sortingDataAccessor https://github.com/angular/components/issues/9205
@@ -26,17 +27,19 @@ export class ChallengeTableOverviewComponent implements OnInit, OnChanges, After
   displayedColumns = ["name","description", "retired","leaderboard", "type", "level"];
   tableFilter = new FormControl<string>("");
 
+  private subscription: Subscription = new Subscription();
+
   ngOnInit(): void {
     this.dataSource.data = this.challenges;
     this.dataSource.filterPredicate = filterOverride
 
-    this.tableFilter.valueChanges.subscribe(value =>{
+    this.subscription.add(this.tableFilter.valueChanges.subscribe(value =>{
       if(value) {
         this.dataSource.filter = value;
       }else {
         this.dataSource.filter = "";
       }
-    })
+    }));
   }
 
   ngOnChanges(changes: ChallengeTableChanges): void {
@@ -49,6 +52,11 @@ export class ChallengeTableOverviewComponent implements OnInit, OnChanges, After
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
   }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
 
   typedSpecialChallenge(untypedSubject: Challenge): Challenge {
     return untypedSubject;
