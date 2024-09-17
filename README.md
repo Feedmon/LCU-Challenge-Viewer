@@ -32,9 +32,3 @@ was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by
 
 * Go to [latest release](https://github.com/Feedmon/LCU-Challenge-Viewer/releases/latest) download the installer exe and run it.
 * An up to date java version is needed to run it.
-
-# Download (For Mac)
-
-* Go to [Mac release](https://github.com/Feedmon/LCU-Challenge-Viewer/releases/tag/v1.2.1MacOs) download the dmg and isntall it.
-* Depending on the Mac version it may not be able to start the java service.
-* An up to date java version is needed too run it.
