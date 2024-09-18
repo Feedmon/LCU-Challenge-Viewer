@@ -31,4 +31,4 @@ was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by
 # Download (For Windows)
 
 * Go to [latest release](https://github.com/Feedmon/LCU-Challenge-Viewer/releases/latest) download the installer exe and run it.
-* An up to date java version is needed to run it.
+* An up to date java version is needed to run it. (https://www.oracle.com/ch-de/java/technologies/downloads/#java21)
