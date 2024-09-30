@@ -8,17 +8,29 @@ import {Challenge} from "../../../backend-api/api/models/challenge";
   selector: 'app-challenge-view',
   templateUrl: 'challenge-view.component.html'
 })
-export class ChallengeViewComponent implements OnInit{
+export class ChallengeViewComponent implements OnInit, OnDestroy{
 
   challenge: Challenge;
+
+   private subscription: Subscription = new Subscription();
 
   constructor(private activatedRoute: ActivatedRoute,
               private challengeControllerService: ChallengeControllerService) {
   }
 
   ngOnInit() :void{
-    this.challengeControllerService.getChallengeInfo(this.activatedRoute.snapshot.params[RouteParameters.challengeName])
-      .then(response=> this.challenge = response);
+    this.loadChallengeData();
+
+      this.subscription.add(this.challengeService.challengesNotify$.subscribe(()=> this.loadChallengeData()));
   }
+
+ ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+  private loadChallengeData(): void {
+        this.challengeControllerService.getChallengeInfo(this.activatedRoute.snapshot.params[RouteParameters.challengeName])
+          .then(response=> this.challenge = response);
+    }
 
 }
