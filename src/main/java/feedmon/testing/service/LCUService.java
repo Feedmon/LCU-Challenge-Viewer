@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.stirante.lolclient.ClientApi;
+import com.stirante.lolclient.ClientConnectionListener;
 import feedmon.testing.domain.challenges.Challenge;
 import feedmon.testing.domain.inventory.ChampionSkin;
 import feedmon.testing.domain.inventory.IngameItem;
@@ -30,6 +31,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 import static feedmon.testing.util.enums.ChallengeAvailableIdType.CHAMPION;
 import static feedmon.testing.util.enums.ChallengeAvailableIdType.ITEM;
@@ -62,7 +64,35 @@ public class LCUService {
     public void startConnection() {
         clientApi = new ClientApi();
         clientApi.start();
+        CompletableFuture.runAsync(this::onConnection);
 
+   /*     loggedInSummoner = executeWithExceptionWrapper(() -> clientApi.getCurrentSummoner());
+        getChallenges(true);*/
+       // getChampions();
+        //getStatstoneProgress(true);
+/*        CompletableFuture.runAsync(() -> {
+            //getStatstoneProgress(true);
+            try {
+                Thread.sleep(5000);
+                System.out.println("yusss");
+            } catch (Exception e){
+                System.out.println("oops");
+            }
+        });
+        Thread newThread = new Thread(() -> {
+            try {
+                getStatstoneProgress(true);
+            } catch (Exception e){
+                System.out.println("oops");
+                System.out.println(e.getMessage());
+            }
+        });
+        newThread.start();*/
+
+      //  getAllSkins();
+    }
+
+    private void onConnection(){
         int counter = 0;
         while (!clientApi.isConnected() && counter <1000) {
             counter++;
@@ -90,7 +120,11 @@ public class LCUService {
     public Challenge getChallengeForName(String challengeName) {
         return challenges.stream().filter(challenge -> challenge.getName().equals(challengeName)).findFirst().orElseThrow();
     }
-
+    
+    public String getHighestClashWinWithSameTeam() {
+    	return executeRequest("/lol-clash/v1/player/history");
+    }
+    
     public List<Challenge> getProgressableChampionSpecificChallenges() {
         return challenges.stream()
                 .filter(challenge -> !challenge.isRetired())
