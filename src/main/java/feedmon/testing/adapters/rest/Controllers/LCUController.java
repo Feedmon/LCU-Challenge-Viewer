@@ -51,7 +51,7 @@ public class LCUController {
 
     @PutMapping(value = "start-connection")
     public void startConnection() {
-        lcuService.startConnection();
+        lcuService.startConnection(false);
     }
 
     @PostMapping(value = "execute-request")

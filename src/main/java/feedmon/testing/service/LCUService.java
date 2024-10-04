@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.stirante.lolclient.ClientApi;
-import com.stirante.lolclient.ClientConnectionListener;
 import feedmon.testing.domain.challenges.Challenge;
 import feedmon.testing.domain.inventory.ChampionSkin;
 import feedmon.testing.domain.inventory.IngameItem;
@@ -37,7 +36,6 @@ import static feedmon.testing.util.enums.ChallengeAvailableIdType.CHAMPION;
 import static feedmon.testing.util.enums.ChallengeAvailableIdType.ITEM;
 
 
-@SuppressWarnings("deprecation")
 @Service
 public class LCUService {
 
@@ -54,47 +52,49 @@ public class LCUService {
     public LCUService() {
         httpClient = HttpClient.newHttpClient();
         objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        try {
-            startConnection();
-        }catch(Exception ignored){
-        }
-
+        CompletableFuture.runAsync(() -> startConnection(true));
     }
 
-    public void startConnection() {
+    public synchronized void startConnection(boolean appStart) {
         clientApi = new ClientApi();
         clientApi.start();
-        CompletableFuture.runAsync(this::onConnection);
-
-   /*     loggedInSummoner = executeWithExceptionWrapper(() -> clientApi.getCurrentSummoner());
-        getChallenges(true);*/
-       // getChampions();
-        //getStatstoneProgress(true);
-/*        CompletableFuture.runAsync(() -> {
-            //getStatstoneProgress(true);
-            try {
-                Thread.sleep(5000);
-                System.out.println("yusss");
-            } catch (Exception e){
-                System.out.println("oops");
-            }
-        });
-        Thread newThread = new Thread(() -> {
-            try {
+        try {
+            if(appStart){
+                automaticConnection();
+                loggedInSummoner = executeWithExceptionWrapper(() -> clientApi.getCurrentSummoner());
+                getChallenges(true);
+                getChampions();
                 getStatstoneProgress(true);
-            } catch (Exception e){
-                System.out.println("oops");
-                System.out.println(e.getMessage());
-            }
-        });
-        newThread.start();*/
+                getAllSkins();
+            }else {
+                manualConnection();
+                loggedInSummoner = executeWithExceptionWrapper(() -> clientApi.getCurrentSummoner());
+                getChallenges(true);
+                CompletableFuture.runAsync(() ->{
+                    getChampions();
+                    getStatstoneProgress(true);
+                    getAllSkins();
+                });
 
-      //  getAllSkins();
+            }
+        }catch(Exception ignored){
+        }
     }
 
-    private void onConnection(){
+    private void automaticConnection(){
+        while (!clientApi.isConnected()) {
+            try {
+                //noinspection BusyWait
+                Thread.sleep(5);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void manualConnection(){
         int counter = 0;
-        while (!clientApi.isConnected() && counter <1000) {
+        while (!clientApi.isConnected() && counter < 1000) {
             counter++;
             try {
                 //noinspection BusyWait
@@ -106,11 +106,6 @@ public class LCUService {
         if(!clientApi.isConnected()){
             throw new RuntimeException("could not connect");
         }
-        loggedInSummoner = executeWithExceptionWrapper(() -> clientApi.getCurrentSummoner());
-        getChallenges(true);
-        getChampions();
-        getStatstoneProgress(true);
-        getAllSkins();
     }
 
     public void stopConnection() {
