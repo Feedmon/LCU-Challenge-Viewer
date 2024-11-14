@@ -165,13 +165,20 @@ public class LCUService {
 
             champions.forEach(champ -> {
                 champ.squarePortraitJpg = executeByteRequest(champ.squarePortraitPath);
-                champ.laneAssignments = champLaneAssignments.stream().filter(champion -> Objects.equals(champ.id, champion.id)).findFirst().orElseThrow().positions;
+                champ.laneAssignments = getLanePositions(champLaneAssignments.stream().filter(champion -> Objects.equals(champ.id, champion.id)).findFirst().orElse(null));
             });
 
             return champions;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private List<String> getLanePositions(ChampionWithLanes champ){
+        if(champ == null){
+            return List.of("top", "jungle", "middle", "bottom", "support");
+        }
+        return champ.positions;
     }
 
     private Map<String, ChampionWithLanes> getChampionsWithLaneAssignments(){
