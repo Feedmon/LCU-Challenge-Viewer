@@ -176,7 +176,7 @@ public class LCUService {
 
     private List<String> getLanePositions(ChampionWithLanes champ){
         if(champ == null){
-            return List.of("top", "jungle", "middle", "bottom", "support");
+            return List.of("TOP", "JUNGLE", "MIDDLE", "BOTTOM", "SUPPORT");
         }
         return champ.positions;
     }
