@@ -15,17 +15,11 @@ was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by
 > milestone progression is sortable by clicking on header
 ![eternals-view.PNG](eternals-view.png)
 
-# How to use since v1.2.0
+# How to use since v1.3.1 (Windows only)
 * open exe and let installer run
 * app wil open immediately after installation
 * standard installation folder is C:\users\ (your user)\AppData\Local\Programs\lcu-challenge-viewer
-* league client can be opened and closed whenever, some function may not work with a closed client.
-
-
-# How to use before v1.2.0
-* Open .exe and league client
-* visit "http://localhost:8080" in a browser
-* Windows will warn you that this exe is not safe, because it's an unsigned exe. Feel free to look at the code to see what it does.
+* league client can be opened and closed whenever, some functions won't work with a closed client.
 
 
 # Download (For Windows)
